@@ -6,7 +6,7 @@
 /*   By: rluder <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/11/19 16:16:02 by rluder            #+#    #+#             */
-/*   Updated: 2016/11/22 09:16:11 by rluder           ###   ########.fr       */
+/*   Updated: 2016/11/25 17:50:15 by rluder           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,37 +18,66 @@
 #include "get_next_line.h"
 #include "minishell.h"
 
-t_varenv	stockenv(char **env)
+t_varenv	*create_varenv(char *env)
+{
+	t_varenv	*varenv;
+
+	varenv = malloc(sizeof(t_varenv));
+	if (!varenv)
+		return (NULL);
+	varenv->var = env;
+	varenv->next = NULL;
+	return (varenv);
+
+}
+
+t_varenv	*stockenv(char **env)
 {
 	int			i;
-	char		**cutpath;
-	t_varenv	varenv;
+	t_varenv	*varenv[2];
 
 	i = 0;
-	while (env[i++])
+	varenv[0] = NULL;
+	while (env[i])
 	{
-		if (ft_strncmp(env[i], "PATH=", 5) == 0)
+		if (i == 0)
 		{
-			 cutpath = ft_strsplit(ft_strdup(env[i]), '=');
-			 varenv.path = ft_strdup(cutpath[1]);
+			varenv[1] = create_varenv(env[i]);
+			varenv[0] = varenv[1];
+			i++;
 		}
-		if (ft_strncmp(env[i], "PWD=", 4) == 0)
+		else
 		{
-			 cutpath = ft_strsplit(ft_strdup(env[i]), '=');
-			 varenv.pwd = ft_strdup(cutpath[1]);
-		}
-		if (ft_strncmp(env[i], "OLDPWD=", 7) == 0)
-		{
-			 cutpath = ft_strsplit(ft_strdup(env[i]), '=');
-			 varenv.oldpwd = ft_strdup(cutpath[1]);
-		}
-		if (ft_strncmp(env[i], "HOME=", 5) == 0)
-		{
-			 cutpath = ft_strsplit(ft_strdup(env[i]), '=');
-			 varenv.home = ft_strdup(cutpath[1]);
+			varenv[1]->next = create_varenv(env[i]);
+			varenv[1] = varenv[1]->next;
+			i++;
 		}
 	}
-	return (varenv);
+	return (varenv[0]);
+}
+
+int	isbuiltin(char **args)
+{
+	if (ft_strcmp(args[0], "cd") == 0 || ft_strcmp(args[0], "env") == 0 ||
+			ft_strcmp(args[0], "setenv") == 0 ||
+			ft_strcmp(args[0], "unsetenv") == 0 ||
+			ft_strcmp(args[0], "echo") == 0)
+		return (1);
+	return (NULL);
+}
+
+int	dobuiltin(char **args, t_varenv *varenv)
+{
+	pid_t	pid;
+	pid_t	wpid;
+	int		status;
+
+	pid = fork();
+	if (pid == 0)
+		execve(findpath(varenv), concat_args(args), varenv_totab(varenv));
+	else
+		wait(&status);
+	return (0);
 }
 
 int	main(int argc, char **argv, char **env)
@@ -57,7 +86,7 @@ int	main(int argc, char **argv, char **env)
 	char		*input;
 	char		*line;
 	char		**args;
-	t_varenv	varenv;
+	t_varenv	*varenv;
 
 	status = 0;
 	input = NULL;
@@ -65,6 +94,14 @@ int	main(int argc, char **argv, char **env)
 	if (argc != 1 && !argv)
 		return (0);
 	varenv = stockenv(env);
+
+/*print varenv
+	while (varenv)
+	{
+		ft_putendl(varenv->var);
+		varenv = varenv->next;
+	}*/
+
 	while (1)
 	{
 		ft_putstr("$>");
@@ -72,18 +109,18 @@ int	main(int argc, char **argv, char **env)
 		line = ft_strdup(input);
 		ft_memdel((void**)&input);
 		args = ft_strsplit(line, ' ');
-/*		if (!isbuiltin(line) && !shell(args, varenv))
+		if (!isbuiltin(args) && !shell(args, varenv))
 			program(args, varenv);
-		else if (!isbuiltin(line))
+		else if (!isbuiltin(args))
 			process(args, varenv);
-		else if (isbuiltin(line) && ft_strcmp(args[0], "exit"))
-			dobuiltin(args, &varenv);
+		else if (isbuiltin(args) && ft_strcmp(args[0], "exit"))
+			dobuiltin(args, varenv);
 		else if (!ft_strcmp(args[0], "exit"))
 		{
 			free(line);
 			free(args);
 			return (0);
-		}*/
+		}
 	}
 	return (0);
 }

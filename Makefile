@@ -6,7 +6,7 @@
 #    By: rluder <marvin@42.fr>                      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2016/10/14 16:58:42 by rluder            #+#    #+#              #
-#    Updated: 2016/11/19 18:11:21 by rluder           ###   ########.fr        #
+#    Updated: 2016/11/25 17:59:45 by rluder           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -17,7 +17,7 @@ OBJ_NAME = $(SRC_NAME:.c=.o)
 
 CC = gcc
 
-EXE = minishell
+EXE = minish
 
 LIB = libft/libft.a
 
