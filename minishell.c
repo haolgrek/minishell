@@ -6,7 +6,7 @@
 /*   By: rluder <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/11/19 16:16:02 by rluder            #+#    #+#             */
-/*   Updated: 2016/11/25 17:50:15 by rluder           ###   ########.fr       */
+/*   Updated: 2016/11/29 17:56:12 by rluder           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,10 +63,34 @@ int	isbuiltin(char **args)
 			ft_strcmp(args[0], "unsetenv") == 0 ||
 			ft_strcmp(args[0], "echo") == 0)
 		return (1);
-	return (NULL);
+	return (0);
 }
 
-int	dobuiltin(char **args, t_varenv *varenv)
+void	do_env(t_varenv	*varenv)
+{
+	while(varenv)
+	{
+		ft_putendl(varenv->var);
+		varenv = varenv->next;
+	}
+}
+
+void	dobuiltin(char **args, t_varenv *varenv)
+{
+	if (!ft_strcmp(args[0], "env"))
+		do_env(varenv);
+	else if (!ft_strcmp(args[0], "unsetenv") && args[1])
+		do_unsetenv(args[1], varenv);
+	else if (!ft_strcmp(args[0], "unsetenv") && !args[1])
+		ft_putendl("unsetenv: not enough arguments");
+	else if (!ft_strcmp(args[0], "setenv"))
+		do_setenv(args, varenv);
+	else if (!ft_strcmp(args[0], "cd"))
+		do_cd(args, varenv);
+}
+
+/*
+int	(char **args, t_varenv *varenv)
 {
 	pid_t	pid;
 	pid_t	wpid;
@@ -78,6 +102,24 @@ int	dobuiltin(char **args, t_varenv *varenv)
 	else
 		wait(&status);
 	return (0);
+}*/
+
+char	*notabs(char *line)
+{
+	int		i;
+	char	*str;
+
+	i = 0;
+	str = malloc(sizeof(char) * (ft_strlen(line) + 1));
+	while (line[i])
+	{
+		str[i] = line[i];
+		if (line[i] == '\t')
+			str[i] = ' ';
+		i++;
+	}
+	str[i] = '\0';
+	return (str);
 }
 
 int	main(int argc, char **argv, char **env)
@@ -94,26 +136,16 @@ int	main(int argc, char **argv, char **env)
 	if (argc != 1 && !argv)
 		return (0);
 	varenv = stockenv(env);
-
-/*print varenv
-	while (varenv)
-	{
-		ft_putendl(varenv->var);
-		varenv = varenv->next;
-	}*/
-
 	while (1)
 	{
 		ft_putstr("$>");
 		get_next_line(0, &input);
 		line = ft_strdup(input);
 		ft_memdel((void**)&input);
-		args = ft_strsplit(line, ' ');
-		if (!isbuiltin(args) && !shell(args, varenv))
-			program(args, varenv);
-		else if (!isbuiltin(args))
+		args = ft_strsplit(notabs(line), ' ');
+		if (isbuiltin(args) == 0)
 			process(args, varenv);
-		else if (isbuiltin(args) && ft_strcmp(args[0], "exit"))
+		else if (isbuiltin(args) == 1 && ft_strcmp(args[0], "exit"))
 			dobuiltin(args, varenv);
 		else if (!ft_strcmp(args[0], "exit"))
 		{
