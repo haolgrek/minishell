@@ -6,7 +6,7 @@
 /*   By: rluder <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/11/19 16:16:02 by rluder            #+#    #+#             */
-/*   Updated: 2016/11/29 17:56:12 by rluder           ###   ########.fr       */
+/*   Updated: 2016/12/02 18:00:52 by rluder           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,6 @@ t_varenv	*create_varenv(char *env)
 	varenv->var = env;
 	varenv->next = NULL;
 	return (varenv);
-
 }
 
 t_varenv	*stockenv(char **env)
@@ -70,9 +69,35 @@ void	do_env(t_varenv	*varenv)
 {
 	while(varenv)
 	{
-		ft_putendl(varenv->var);
+		if (varenv->var)
+			ft_putendl(varenv->var);
 		varenv = varenv->next;
 	}
+}
+
+void	do_unsetenv(char **args, t_varenv *varenv)
+{
+	int			i;
+	t_varenv	*start;
+
+	i = 1;
+	start = varenv;
+	while (args[i])
+	{
+		varenv = start;
+		while (varenv)
+		{
+			if (!ft_strncmp(args[i], varenv->var, '='))
+				ft_strclr(varenv->var);
+			varenv = varenv->next;
+		}
+		i++;
+	}
+}
+
+void	do_setenv(char **args, t_varenv *varenv)
+{
+	
 }
 
 void	dobuiltin(char **args, t_varenv *varenv)
@@ -80,7 +105,7 @@ void	dobuiltin(char **args, t_varenv *varenv)
 	if (!ft_strcmp(args[0], "env"))
 		do_env(varenv);
 	else if (!ft_strcmp(args[0], "unsetenv") && args[1])
-		do_unsetenv(args[1], varenv);
+		do_unsetenv(args, varenv);
 	else if (!ft_strcmp(args[0], "unsetenv") && !args[1])
 		ft_putendl("unsetenv: not enough arguments");
 	else if (!ft_strcmp(args[0], "setenv"))
