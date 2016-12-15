@@ -6,7 +6,7 @@
 /*   By: rluder <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/11/19 16:16:02 by rluder            #+#    #+#             */
-/*   Updated: 2016/12/02 18:00:52 by rluder           ###   ########.fr       */
+/*   Updated: 2016/12/15 23:56:11 by rluder           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,9 +93,59 @@ void	do_unsetenv(char **args, t_varenv *varenv)
 		}
 		i++;
 	}
+	varenv = start;
 }
 
+/*void	ins_bef_last(char *argi, t_varenv *varenv)
+{
+	t_varenv	*tmp[2];
+
+	if (varenv->next->next)
+	{
+		while (varenv->next->next)
+		{
+			varenv = varenv->next;
+		}
+		tmp[0] = create_varenv(char *argi);
+		tmp[1] = varenv->next->next;
+		varenv->next = tmp[0];
+		tmp[0]->next = tmp[1];
+	}
+	else
+	{
+
+	}
+}*/
+
 void	do_setenv(char **args, t_varenv *varenv)
+{
+	int	i;
+	int j;
+	t_varenv	*start;
+	t_varenv	*tmp;
+
+	i = 1;
+	start = varenv;
+	while (args[i])
+	{
+		j = 0;
+		varenv = start;
+		while (varenv)
+		{
+			if (!ft_strncmp(args[i], varenv->var, '='))
+			{
+				varenv->var = ft_strcpy(varenv->var, args[i]);
+				j = 1;
+			}
+			varenv = varenv->next;
+		}
+		if (j == 0)
+			varenv->next = create_varenv(args[i]);
+	}
+	varenv = start;
+}
+
+void	do_cd(char **args, t_varenv *varenv)
 {
 	
 }
@@ -112,6 +162,8 @@ void	dobuiltin(char **args, t_varenv *varenv)
 		do_setenv(args, varenv);
 	else if (!ft_strcmp(args[0], "cd"))
 		do_cd(args, varenv);
+	else if (!ft_strcmp(args[0], "echo"))
+		do_echo(args, varenv);
 }
 
 /*
