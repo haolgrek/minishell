@@ -6,7 +6,7 @@
 /*   By: rluder <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/11/19 16:16:02 by rluder            #+#    #+#             */
-/*   Updated: 2016/12/15 23:56:11 by rluder           ###   ########.fr       */
+/*   Updated: 2016/12/19 21:04:18 by rluder           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -150,6 +150,16 @@ void	do_cd(char **args, t_varenv *varenv)
 	
 }
 
+void	do_echo(char **args, t_varenv *varenv)
+{
+	int	addc;
+
+	addc = 0;
+	if (!ft_strcmp(args[1], "-n"))
+		addc = 1;
+
+}
+
 void	dobuiltin(char **args, t_varenv *varenv)
 {
 	if (!ft_strcmp(args[0], "env"))
@@ -166,6 +176,10 @@ void	dobuiltin(char **args, t_varenv *varenv)
 		do_echo(args, varenv);
 }
 
+void	*process(char **args, t_varenv *varenv)
+{
+	do_else avec path;
+}
 /*
 int	(char **args, t_varenv *varenv)
 {
