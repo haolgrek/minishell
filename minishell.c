@@ -6,7 +6,7 @@
 /*   By: rluder <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/11/19 16:16:02 by rluder            #+#    #+#             */
-/*   Updated: 2016/12/19 21:04:18 by rluder           ###   ########.fr       */
+/*   Updated: 2016/12/20 20:38:35 by rluder           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -153,11 +153,29 @@ void	do_cd(char **args, t_varenv *varenv)
 void	do_echo(char **args, t_varenv *varenv)
 {
 	int	addc;
+	int	start;
+	int	i;
+	char **args2;
 
+	i = 1;
 	addc = 0;
-	if (!ft_strcmp(args[1], "-n"))
+	start = 0;
+	do_args2(args);
+	if (!ft_strcmp(args2[1], "-n"))
+	{
 		addc = 1;
-
+		i++;
+	}
+	while (args2[i])
+	{
+		ft_putstr(args2[i]);
+		start = 1;
+		if (args2[i + 1])
+			ft_putchar(' ');
+		i++;
+	}
+	if (addc == 0)
+		ft_putchar('\n');
 }
 
 void	dobuiltin(char **args, t_varenv *varenv)
