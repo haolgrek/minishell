@@ -6,7 +6,7 @@
 /*   By: rluder <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/11/19 16:16:02 by rluder            #+#    #+#             */
-/*   Updated: 2016/12/20 20:38:35 by rluder           ###   ########.fr       */
+/*   Updated: 2016/12/27 19:31:45 by rluder           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -147,7 +147,7 @@ void	do_setenv(char **args, t_varenv *varenv)
 
 void	do_cd(char **args, t_varenv *varenv)
 {
-	
+	use chdir;
 }
 
 void	do_echo(char **args, t_varenv *varenv)
