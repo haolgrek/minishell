@@ -6,7 +6,7 @@
 /*   By: rluder <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/11/19 16:16:02 by rluder            #+#    #+#             */
-/*   Updated: 2016/12/27 19:31:45 by rluder           ###   ########.fr       */
+/*   Updated: 2016/12/29 19:39:13 by rluder           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,7 @@ int	isbuiltin(char **args)
 
 void	do_env(t_varenv	*varenv)
 {
-	while(varenv)
+	while (varenv)
 	{
 		if (varenv->var)
 			ft_putendl(varenv->var);
@@ -132,7 +132,7 @@ void	do_setenv(char **args, t_varenv *varenv)
 		varenv = start;
 		while (varenv)
 		{
-			if (!ft_strncmp(args[i], varenv->var, '='))
+			if (!ft_strcmp(ft_strsplit(args[i], '=')[0], ft_strsplit(varenv->var, '=')[0])) //a refaire, compare jusqua un nombre pas un caractere!
 			{
 				varenv->var = ft_strcpy(varenv->var, args[i]);
 				j = 1;
@@ -145,9 +145,30 @@ void	do_setenv(char **args, t_varenv *varenv)
 	varenv = start;
 }
 
+void	go_pwd(t_varenv *varenv)
+{
+	t_varenv	*var1;
+	t_varenv	*var2;
+
+	varenv = start;
+	while (varenv)
+	{
+		if (!ft_strcmp(args[i], varenv->var, '='))
+		{
+			
+		}
+}
+
+
+
 void	do_cd(char **args, t_varenv *varenv)
 {
-	use chdir;
+	if (!args[1])
+		go_pwd(varenv);
+	else if (!ft_strcmp(args[1], "-"))
+		revert_pwd(varenv);
+	else
+		change_dir(args, varenv);
 }
 
 void	do_echo(char **args, t_varenv *varenv)
