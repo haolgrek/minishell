@@ -6,7 +6,7 @@
 /*   By: rluder <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/11/19 16:16:02 by rluder            #+#    #+#             */
-/*   Updated: 2016/12/31 00:04:40 by rluder           ###   ########.fr       */
+/*   Updated: 2016/12/31 10:25:06 by rluder           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -170,6 +170,38 @@ void	go_pwd(t_varenv *varenv)
 
 void	revert_pwd(t_varenv *varenv)
 {
+	char		*pwd;
+	char		*oldpwd;
+	t_varenv	*start;
+
+	start = varenv;
+	while (varenv)
+	{
+		if (!ft_strcmp("PWD", ft_strsplit(varenv->var, '=')[0]))
+			pwd = ft_strcpy(pwd, ft_strsplit(varenv->var, '=')[1]);
+		varenv = varenv->next;
+	}
+	varenv = start;
+	while (varenv)
+	{
+		if (!ft_strcmp("OLDPWD", ft_strsplit(varenv->var, '=')[0]))
+			oldpwd = ft_strcpy(oldpwd, ft_strsplit(varenv->var, '=')[1]);
+		varenv = varenv->next;
+	}
+	varenv = start;
+	while (varenv)
+	{
+		if (!ft_strcmp("PWD", ft_strsplit(varenv->var, '=')[0]))
+			varenv->var = ft_strcpy(varenv->var, ft_strjoin("PWD=", pwd));
+		if (!ft_strcmp("OLDPWD", ft_strsplit(varenv->var, '=')[0]))
+			varenv->var = ft_strcpy(varenv->var, ft_strjoin("OLDPWD=", pwd));
+		varenv = varenv->next;
+	}
+	varenv = start;
+}
+
+void	change_dir(char **args, t_varenv *varenv)
+{
 	
 }
 
@@ -193,7 +225,7 @@ void	do_echo(char **args, t_varenv *varenv)
 	i = 1;
 	addc = 0;
 	start = 0;
-	do_args2(args);
+	args2 = do_args2(args);
 	if (!ft_strcmp(args2[1], "-n"))
 	{
 		addc = 1;
