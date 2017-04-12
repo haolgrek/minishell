@@ -6,7 +6,7 @@
 /*   By: rluder <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/11/19 16:16:02 by rluder            #+#    #+#             */
-/*   Updated: 2017/04/12 22:01:17 by rluder           ###   ########.fr       */
+/*   Updated: 2017/04/12 23:15:10 by rluder           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,35 +75,6 @@ void	do_env(t_varenv	*varenv)
 		varenv = varenv->next;
 	}
 }
-
-/*t_varenv	*del_varenv(t_varenv *varenv, char *name)
-{
-	t_varenv	*prev;
-	t_varenv	*next;
-	t_varenv	*start;
-
-	start = varenv;
-	prev = varenv;
-	while (varenv)
-	{
-		if (prev == start)
-		{
-			if (!ft_strcmp(name, ft_strsplit(varenv->var, '=')[0]))
-				start = varenv->next;
-		}
-		else
-		{
-			if (!ft_strcmp(name, ft_strsplit(varenv->var, '=')[0]))
-			{
-				varenv = prev;
-				prev->next = varenv->next;
-			}
-		}
-		varenv = varenv->next;
-		prev = varenv;
-	}
-	return (start);
-}*/
 
 void	remove_node(t_varenv *start, t_varenv *varenv)
 {
