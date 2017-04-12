@@ -6,7 +6,7 @@
 /*   By: rluder <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/11/19 16:16:02 by rluder            #+#    #+#             */
-/*   Updated: 2017/02/03 21:29:32 by rluder           ###   ########.fr       */
+/*   Updated: 2017/04/12 17:53:17 by rluder           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -259,9 +259,66 @@ void	dobuiltin(char **args, t_varenv *varenv)
 		do_echo(args, varenv);
 }
 
+char	**unpack_path(t_varenv *varenv)
+{
+	char	*unpack;
+	char	**path;
+
+	while (varenv)
+	{
+		if (ft_strcmp("PATH", ft_strsplit(varenv->var, '=')[0]))
+			unpack = ft_strcpy(unpack, ft_strsplit(varenv->var, '=')[1]);
+		varenv = varenv->next;
+	}
+	path = ft_strsplit(unpack, ':');
+	return (path);
+}
+
+
+char	*unpack_pwd(t_varenv *varenv)
+{
+	char	*pwd;
+
+	while (varenv)
+	{
+		if (ft_strcmp("PWD", ft_strsplit(varenv->var, '=')[0]))
+			pwd = ft_strcpy(pwd, ft_strsplit(varenv->var, '=')[1]);
+		varenv = varenv->next;
+	}
+	return (pwd);
+}
+
+void	*exec_process(char *path, char **args, t_varenv *varenv)
+{
+	id_t	pid;
+	int		status;
+
+
+}
+
 void	*process(char **args, t_varenv *varenv)
 {
-	do_else avec path;
+	char	**path;
+	char	*pwd;
+	int		i;
+	int		exists;
+
+	i = 0;
+	path = unpack_path(varenv);
+	while (exists != 1 && path[i])
+	{
+		if (access(ft_strjoin(ft_strjoin(path[i], "/"), args[0]), F_OK))
+			exists = 1;
+		else
+			i++;
+	}
+	if (exists == 1)
+		exec_process(ft_strjoin(ft_strjoin(path[i], "/"), args[0]), args, varenv);
+	else
+	{
+		pwd = unpack_pwd(varenv);
+		exec_process(ft_strjoin(ft_strjoin(pwd, "/"), args[0]), args, varenv);
+	}
 }
 /*
 int	(char **args, t_varenv *varenv)
