@@ -6,7 +6,7 @@
 /*   By: rluder <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/11/19 16:16:02 by rluder            #+#    #+#             */
-/*   Updated: 2017/04/12 17:53:17 by rluder           ###   ########.fr       */
+/*   Updated: 2017/04/12 22:01:17 by rluder           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/wait.h>
+#include <signal.h>
 #include "libft/libft.h"
 #include "get_next_line.h"
 #include "minishell.h"
@@ -69,16 +70,76 @@ void	do_env(t_varenv	*varenv)
 {
 	while (varenv)
 	{
-		if (varenv->var)
+		if (varenv->var && ft_strcmp(varenv->var, "\0") != 0)
 			ft_putendl(varenv->var);
 		varenv = varenv->next;
 	}
+}
+
+/*t_varenv	*del_varenv(t_varenv *varenv, char *name)
+{
+	t_varenv	*prev;
+	t_varenv	*next;
+	t_varenv	*start;
+
+	start = varenv;
+	prev = varenv;
+	while (varenv)
+	{
+		if (prev == start)
+		{
+			if (!ft_strcmp(name, ft_strsplit(varenv->var, '=')[0]))
+				start = varenv->next;
+		}
+		else
+		{
+			if (!ft_strcmp(name, ft_strsplit(varenv->var, '=')[0]))
+			{
+				varenv = prev;
+				prev->next = varenv->next;
+			}
+		}
+		varenv = varenv->next;
+		prev = varenv;
+	}
+	return (start);
+}*/
+
+void	remove_node(t_varenv *start, t_varenv *varenv)
+{
+	t_varenv	*temp;
+	t_varenv	*current;
+	t_varenv	*previous;
+
+	if (ft_strcmp(varenv->var, start->var) == 0)
+	{
+		temp = start;
+		start = start->next;
+		free (temp);
+		return;
+	}
+	current = start->next;
+	previous = start;
+	while (current != NULL && previous != NULL)
+	{
+		if (ft_strcmp(varenv->var, current->var) == 0)
+		{
+			temp = current;
+			previous->next = current->next;
+			free (temp);
+			return;
+		}
+		previous = current;
+		current = current->next;
+	}
+	return;
 }
 
 void	do_unsetenv(char **args, t_varenv *varenv)
 {
 	int			i;
 	t_varenv	*start;
+	t_varenv	*temp;
 
 	i = 1;
 	start = varenv;
@@ -88,34 +149,15 @@ void	do_unsetenv(char **args, t_varenv *varenv)
 		while (varenv)
 		{
 			if (!ft_strcmp(args[i], ft_strsplit(varenv->var, '=')[0]))
-				ft_strclr(varenv->var);
+			{
+				remove_node(start, varenv);
+			}
 			varenv = varenv->next;
 		}
 		i++;
 	}
 	varenv = start;
 }
-
-/*void	ins_bef_last(char *argi, t_varenv *varenv)
-{
-	t_varenv	*tmp[2];
-
-	if (varenv->next->next)
-	{
-		while (varenv->next->next)
-		{
-			varenv = varenv->next;
-		}
-		tmp[0] = create_varenv(char *argi);
-		tmp[1] = varenv->next->next;
-		varenv->next = tmp[0];
-		tmp[0]->next = tmp[1];
-	}
-	else
-	{
-
-	}
-}*/
 
 void	do_setenv(char **args, t_varenv *varenv)
 {
@@ -128,19 +170,21 @@ void	do_setenv(char **args, t_varenv *varenv)
 	start = varenv;
 	while (args[i])
 	{
-		j = 0;
 		varenv = start;
 		while (varenv)
 		{
 			if (!ft_strcmp(ft_strsplit(args[i], '=')[0], ft_strsplit(varenv->var, '=')[0]))
 			{
-				varenv->var = ft_strcpy(varenv->var, args[i]);
-				j = 1;
+				varenv->var = args[i];
+				return;
 			}
 			varenv = varenv->next;
 		}
-		if (j == 0)
-			varenv->next = create_varenv(args[i]);
+		varenv = start;
+		while (varenv->next)
+			varenv = varenv->next;
+		varenv->next = create_varenv(args[i]);
+		i++;
 	}
 	varenv = start;
 }
@@ -202,7 +246,7 @@ void	revert_pwd(t_varenv *varenv)
 
 void	change_dir(char **args, t_varenv *varenv)
 {
-	
+	ft_putendl("nope, not done");
 }
 
 void	do_cd(char **args, t_varenv *varenv)
@@ -224,20 +268,20 @@ void	do_echo(char **args, t_varenv *varenv)
 
 	i = 1;
 	addc = 0;
-	start = 0;
-	args2 = do_args2(args);
-	if (!ft_strcmp(args2[1], "-n"))
+	if (args[1])
 	{
-		addc = 1;
-		i++;
-	}
-	while (args2[i])
-	{
-		ft_putstr(args2[i]);
-		start = 1;
-		if (args2[i + 1])
-			ft_putchar(' ');
-		i++;
+		if (!ft_strcmp(args[1], "-n"))
+		{
+			addc = 1;
+			i++;
+		}
+		while (args[i])
+		{
+			ft_putstr(args[i]);
+			if (args[i + 1])
+				ft_putchar(' ');
+			i++;
+		}
 	}
 	if (addc == 0)
 		ft_putchar('\n');
@@ -246,17 +290,35 @@ void	do_echo(char **args, t_varenv *varenv)
 void	dobuiltin(char **args, t_varenv *varenv)
 {
 	if (!ft_strcmp(args[0], "env"))
+	{
 		do_env(varenv);
+		ft_putendl("inenv");
+	}
 	else if (!ft_strcmp(args[0], "unsetenv") && args[1])
+	{
 		do_unsetenv(args, varenv);
+		ft_putendl("inunsetenv");
+	}
 	else if (!ft_strcmp(args[0], "unsetenv") && !args[1])
+	{
 		ft_putendl("unsetenv: not enough arguments");
-	else if (!ft_strcmp(args[0], "setenv"))
+		ft_putendl("inunsetenv");
+	}
+	else if (!ft_strcmp(args[0], "setenv") && ft_strchr(args[1], '='))
+	{
 		do_setenv(args, varenv);
+		ft_putendl("insetenv");
+	}
 	else if (!ft_strcmp(args[0], "cd"))
+	{
 		do_cd(args, varenv);
+		ft_putendl("incd");
+	}
 	else if (!ft_strcmp(args[0], "echo"))
+	{
 		do_echo(args, varenv);
+		ft_putendl("inecho");
+	}
 }
 
 char	**unpack_path(t_varenv *varenv)
@@ -288,15 +350,48 @@ char	*unpack_pwd(t_varenv *varenv)
 	return (pwd);
 }
 
-void	*exec_process(char *path, char **args, t_varenv *varenv)
+char	**redo_env(t_varenv *varenv)
+{
+	t_varenv	*start;
+	int			i;
+	char		**env;
+	
+	i = 0;
+	start = varenv;
+	while (varenv)
+	{
+		i++;
+		varenv = varenv->next;
+	}
+	varenv = start;
+	env = malloc(sizeof(char *) * i);
+	i = 0;
+	while (env[i])
+	{
+		env[i] = ft_strcpy(env[i], varenv->var);
+		i++;
+	}
+	return (env);
+}
+
+void	exec_process(char *path, char **args, t_varenv *varenv)
 {
 	id_t	pid;
 	int		status;
+	char	**env;
 
-
+	env = redo_env(varenv);
+	pid = fork();
+	if (pid > 0)
+		wait(&status);
+	if (pid == 0)
+	{
+		execve(path, args, env);
+		kill(pid, 9);
+	}
 }
 
-void	*process(char **args, t_varenv *varenv)
+void	process(char **args, t_varenv *varenv)
 {
 	char	**path;
 	char	*pwd;
@@ -304,6 +399,7 @@ void	*process(char **args, t_varenv *varenv)
 	int		exists;
 
 	i = 0;
+	exists = 0;
 	path = unpack_path(varenv);
 	while (exists != 1 && path[i])
 	{
@@ -317,23 +413,17 @@ void	*process(char **args, t_varenv *varenv)
 	else
 	{
 		pwd = unpack_pwd(varenv);
-		exec_process(ft_strjoin(ft_strjoin(pwd, "/"), args[0]), args, varenv);
+		if (access(ft_strjoin(ft_strjoin(pwd, "/"), args[0]), F_OK))
+		{
+			exec_process(ft_strjoin(ft_strjoin(pwd, "/"), args[0]), args, varenv);
+		}
+		else
+		{
+			ft_putstr("minishell: command not found\n");
+			ft_putendl(args[0]);
+		}
 	}
 }
-/*
-int	(char **args, t_varenv *varenv)
-{
-	pid_t	pid;
-	pid_t	wpid;
-	int		status;
-
-	pid = fork();
-	if (pid == 0)
-		execve(findpath(varenv), concat_args(args), varenv_totab(varenv));
-	else
-		wait(&status);
-	return (0);
-}*/
 
 char	*notabs(char *line)
 {
@@ -355,34 +445,40 @@ char	*notabs(char *line)
 
 int	main(int argc, char **argv, char **env)
 {
-	int			status;
 	char		*input;
 	char		*line;
 	char		**args;
 	t_varenv	*varenv;
+	int			test;
 
-	status = 0;
 	input = NULL;
-
 	if (argc != 1 && !argv)
 		return (0);
 	varenv = stockenv(env);
 	while (1)
 	{
+		test = 0;
 		ft_putstr("$>");
 		get_next_line(0, &input);
 		line = ft_strdup(input);
 		ft_memdel((void**)&input);
 		args = ft_strsplit(notabs(line), ' ');
-		if (isbuiltin(args) == 0)
-			process(args, varenv);
-		else if (isbuiltin(args) == 1 && ft_strcmp(args[0], "exit"))
-			dobuiltin(args, varenv);
-		else if (!ft_strcmp(args[0], "exit"))
+		if (!ft_strcmp(args[0], "exit"))
 		{
 			free(line);
 			free(args);
+			ft_putendl("free done");
 			return (0);
+		}
+		else if (isbuiltin(args) == 1)
+		{
+			dobuiltin(args, varenv);
+			ft_putendl("dobuiltin done");
+		}
+		else if (isbuiltin(args) == 0)
+		{
+			process(args, varenv);
+			ft_putendl("process done");
 		}
 	}
 	return (0);
