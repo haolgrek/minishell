@@ -6,7 +6,7 @@
 /*   By: rluder <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/11/19 16:16:02 by rluder            #+#    #+#             */
-/*   Updated: 2017/04/12 23:15:10 by rluder           ###   ########.fr       */
+/*   Updated: 2017/04/13 23:27:25 by rluder           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,13 +66,56 @@ int	isbuiltin(char **args)
 	return (0);
 }
 
-void	do_env(t_varenv	*varenv)
+void	print_env(t_varenv *varenv, int izi)
 {
+	if (izi == 1)
+		return;
 	while (varenv)
 	{
 		if (varenv->var && ft_strcmp(varenv->var, "\0") != 0)
 			ft_putendl(varenv->var);
 		varenv = varenv->next;
+	}
+}
+
+void	do_env(t_varenv	*varenv, char **args)
+{
+	int	i;
+	int	izi;
+
+	izi = 0;
+	if (!args[1])
+	{
+		print_env(varenv, izi);
+		return;
+	}
+	i = 1;
+	while (args[i])
+	{
+		if (ft_strcmp(args[i], "env") == 0)
+		{
+			i++;
+			if (ft_strcmp(args[i], "-i") == 0)
+			{
+				izi = 1;
+				i++;
+			}
+		}
+	}
+	if (!args[i])
+	{
+		print_env(varenv, izi);
+		return;
+	}
+	if (args[i] && izi == 1)
+		do_moinzi(args, i); //avec do_new_setenv vide?
+	else if (ft_strchr(args[i], '=') == 0)
+		do_new_setenv(args, i, varenv);
+	else
+	{
+		ft_putstr("env: ");
+		ft_putstr(args[i]);
+		ft_putendl(": No such file or directory");
 	}
 }
 
@@ -262,7 +305,7 @@ void	dobuiltin(char **args, t_varenv *varenv)
 {
 	if (!ft_strcmp(args[0], "env"))
 	{
-		do_env(varenv);
+		do_env(varenv, args);
 		ft_putendl("inenv");
 	}
 	else if (!ft_strcmp(args[0], "unsetenv") && args[1])
