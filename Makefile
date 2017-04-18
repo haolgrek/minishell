@@ -6,11 +6,12 @@
 #    By: rluder <marvin@42.fr>                      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2016/10/14 16:58:42 by rluder            #+#    #+#              #
-#    Updated: 2017/04/12 18:22:15 by rluder           ###   ########.fr        #
+#    Updated: 2017/04/18 16:20:18 by rluder           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 SRC_NAME = minishell.c \
+		   env.c \
 		   get_next_line.c \
 
 OBJ_NAME = $(SRC_NAME:.c=.o)

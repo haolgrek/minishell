@@ -6,7 +6,7 @@
 /*   By: rluder <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/11/19 16:16:02 by rluder            #+#    #+#             */
-/*   Updated: 2017/04/13 23:27:25 by rluder           ###   ########.fr       */
+/*   Updated: 2017/04/19 00:08:25 by rluder           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,27 +90,27 @@ void	do_env(t_varenv	*varenv, char **args)
 		return;
 	}
 	i = 1;
-	while (args[i])
+	while (args[i] && (ft_strcmp(args[i], "-i") == 0 ||
+			ft_strcmp(args[i], "env") == 0))
 	{
-		if (ft_strcmp(args[i], "env") == 0)
+		if (ft_strcmp(args[i], "-i") == 0)
 		{
+			izi = 1;
 			i++;
-			if (ft_strcmp(args[i], "-i") == 0)
-			{
-				izi = 1;
-				i++;
-			}
 		}
+		if (args[i] && ft_strcmp(args[i], "env") == 0)
+			i++;
 	}
 	if (!args[i])
 	{
 		print_env(varenv, izi);
 		return;
 	}
-	if (args[i] && izi == 1)
-		do_moinzi(args, i); //avec do_new_setenv vide?
-	else if (ft_strchr(args[i], '=') == 0)
-		do_new_setenv(args, i, varenv);
+	else if (ft_strchr(args[i], '='))
+	{
+		print_env(varenv, izi);
+		do_new_setenv(args, i);
+	}
 	else
 	{
 		ft_putstr("env: ");
@@ -206,24 +206,39 @@ void	do_setenv(char **args, t_varenv *varenv)
 void	go_pwd(t_varenv *varenv)
 {
 	t_varenv	*var1;
-	t_varenv	*var2;
 	char		*home;
 
 	var1 = varenv;
+	home = malloc(sizeof(char) * 256);
+	ft_putendl("inpwd");
 	while (varenv)
 	{
+		ft_putendl("inw1");
 		if (!ft_strcmp("HOME", ft_strsplit(varenv->var, '=')[0]))
-			home = ft_strcpy(home, ft_strsplit(varenv->var, '=')[1]);
+		{
+			ft_putendl("inif1");
+			if (ft_strlen(ft_strsplit(varenv->var, '=')[1]) < 256)
+				home = ft_strcpy(home, ft_strsplit(varenv->var, '=')[1]);
+			else
+				ft_putendl("Path too long");
+		}
+		ft_putendl("outif1");
 		varenv = varenv->next;
 	}
 	varenv = var1;
 	while (varenv)
 	{
+		ft_putendl("inw2");
 		if (!ft_strcmp("PWD", ft_strsplit(varenv->var, '=')[0]))
+		{
+			ft_putendl("inif2");
 			varenv->var = ft_strjoin("PWD=", home);
+		}
 		varenv = varenv->next;
 	}
+	ft_putendl("hm");
 	varenv = var1;
+	ft_putendl("wat");
 }
 
 void	revert_pwd(t_varenv *varenv)
@@ -233,6 +248,8 @@ void	revert_pwd(t_varenv *varenv)
 	t_varenv	*start;
 
 	start = varenv;
+	pwd = malloc(sizeof(char) * 256);
+	oldpwd = malloc(sizeof(char) * 256);
 	while (varenv)
 	{
 		if (!ft_strcmp("PWD", ft_strsplit(varenv->var, '=')[0]))
@@ -252,7 +269,7 @@ void	revert_pwd(t_varenv *varenv)
 		if (!ft_strcmp("PWD", ft_strsplit(varenv->var, '=')[0]))
 			varenv->var = ft_strcpy(varenv->var, ft_strjoin("PWD=", pwd));
 		if (!ft_strcmp("OLDPWD", ft_strsplit(varenv->var, '=')[0]))
-			varenv->var = ft_strcpy(varenv->var, ft_strjoin("OLDPWD=", pwd));
+			varenv->var = ft_strcpy(varenv->var, ft_strjoin("OLDPWD=", oldpwd));
 		varenv = varenv->next;
 	}
 	varenv = start;
@@ -265,12 +282,25 @@ void	change_dir(char **args, t_varenv *varenv)
 
 void	do_cd(char **args, t_varenv *varenv)
 {
+	ft_putendl("incd");
 	if (!args[1])
+	{
+		ft_putendl("ingopwd");
 		go_pwd(varenv);
+		ft_putendl("gopwd");
+	}
 	else if (!ft_strcmp(args[1], "-"))
+	{
+		ft_putendl("inrevert");
 		revert_pwd(varenv);
+		ft_putendl("revertdone");
+	}
 	else
+	{
+		ft_putendl("inchdir");
 		change_dir(args, varenv);
+		ft_putendl("chdirdone");
+	}
 }
 
 void	do_echo(char **args, t_varenv *varenv)
@@ -401,7 +431,7 @@ void	exec_process(char *path, char **args, t_varenv *varenv)
 	if (pid == 0)
 	{
 		execve(path, args, env);
-		kill(pid, 9);
+	//	kill(pid, 9);
 	}
 }
 
@@ -463,7 +493,6 @@ int	main(int argc, char **argv, char **env)
 	char		*line;
 	char		**args;
 	t_varenv	*varenv;
-	int			test;
 
 	input = NULL;
 	if (argc != 1 && !argv)
@@ -471,9 +500,9 @@ int	main(int argc, char **argv, char **env)
 	varenv = stockenv(env);
 	while (1)
 	{
-		test = 0;
 		ft_putstr("$>");
-		get_next_line(0, &input);
+		if (get_next_line(0, &input) < 0)
+			return (0);
 		line = ft_strdup(input);
 		ft_memdel((void**)&input);
 		args = ft_strsplit(notabs(line), ' ');
@@ -491,6 +520,7 @@ int	main(int argc, char **argv, char **env)
 		}
 		else if (isbuiltin(args) == 0)
 		{
+			ft_putendl("letsgo");
 			process(args, varenv);
 			ft_putendl("process done");
 		}
