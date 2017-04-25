@@ -6,7 +6,7 @@
 /*   By: rluder <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/11/19 16:16:02 by rluder            #+#    #+#             */
-/*   Updated: 2017/04/19 00:08:25 by rluder           ###   ########.fr       */
+/*   Updated: 2017/04/25 16:54:21 by rluder           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -370,13 +370,15 @@ char	**unpack_path(t_varenv *varenv)
 	char	*unpack;
 	char	**path;
 
+	unpack = malloc(sizeof(char) * 255);
 	while (varenv)
 	{
-		if (ft_strcmp("PATH", ft_strsplit(varenv->var, '=')[0]))
+		if (!ft_strcmp("PATH", ft_strsplit(varenv->var, '=')[0]))
 			unpack = ft_strcpy(unpack, ft_strsplit(varenv->var, '=')[1]);
 		varenv = varenv->next;
 	}
 	path = ft_strsplit(unpack, ':');
+	free (unpack);
 	return (path);
 }
 
@@ -385,12 +387,16 @@ char	*unpack_pwd(t_varenv *varenv)
 {
 	char	*pwd;
 
+	pwd = malloc(sizeof(char) * 255);
 	while (varenv)
 	{
-		if (ft_strcmp("PWD", ft_strsplit(varenv->var, '=')[0]))
+		if (!ft_strcmp("PWD", ft_strsplit(varenv->var, '=')[0]))
 			pwd = ft_strcpy(pwd, ft_strsplit(varenv->var, '=')[1]);
 		varenv = varenv->next;
 	}
+	ft_putendl("pwd is:");
+	ft_putendl(pwd);
+	ft_putendl("end pwd");
 	return (pwd);
 }
 
@@ -431,7 +437,7 @@ void	exec_process(char *path, char **args, t_varenv *varenv)
 	if (pid == 0)
 	{
 		execve(path, args, env);
-	//	kill(pid, 9);
+		kill(pid, 9);
 	}
 }
 
@@ -447,7 +453,7 @@ void	process(char **args, t_varenv *varenv)
 	path = unpack_path(varenv);
 	while (exists != 1 && path[i])
 	{
-		if (access(ft_strjoin(ft_strjoin(path[i], "/"), args[0]), F_OK))
+		if (!access(ft_strjoin(ft_strjoin(path[i], "/"), args[0]), F_OK))
 			exists = 1;
 		else
 			i++;
@@ -457,13 +463,18 @@ void	process(char **args, t_varenv *varenv)
 	else
 	{
 		pwd = unpack_pwd(varenv);
-		if (access(ft_strjoin(ft_strjoin(pwd, "/"), args[0]), F_OK))
+		ft_putendl("path is:");
+		ft_putendl(ft_strjoin(ft_strjoin(pwd, "/"), args[0]));
+		ft_putendl("path end");
+		if (!access(ft_strjoin(ft_strjoin(pwd, "/"), args[0]), F_OK))
 		{
+			ft_putendl("inif3");
 			exec_process(ft_strjoin(ft_strjoin(pwd, "/"), args[0]), args, varenv);
+			ft_putendl("endif3");
 		}
 		else
 		{
-			ft_putstr("minishell: command not found\n");
+			ft_putstr("minishell: command not found: ");
 			ft_putendl(args[0]);
 		}
 	}
