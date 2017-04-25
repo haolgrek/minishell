@@ -6,7 +6,7 @@
 /*   By: rluder <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/11/19 16:16:02 by rluder            #+#    #+#             */
-/*   Updated: 2017/04/25 16:54:21 by rluder           ###   ########.fr       */
+/*   Updated: 2017/04/25 19:14:19 by rluder           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -210,35 +210,25 @@ void	go_pwd(t_varenv *varenv)
 
 	var1 = varenv;
 	home = malloc(sizeof(char) * 256);
-	ft_putendl("inpwd");
 	while (varenv)
 	{
-		ft_putendl("inw1");
 		if (!ft_strcmp("HOME", ft_strsplit(varenv->var, '=')[0]))
 		{
-			ft_putendl("inif1");
 			if (ft_strlen(ft_strsplit(varenv->var, '=')[1]) < 256)
 				home = ft_strcpy(home, ft_strsplit(varenv->var, '=')[1]);
 			else
 				ft_putendl("Path too long");
 		}
-		ft_putendl("outif1");
 		varenv = varenv->next;
 	}
 	varenv = var1;
 	while (varenv)
 	{
-		ft_putendl("inw2");
 		if (!ft_strcmp("PWD", ft_strsplit(varenv->var, '=')[0]))
-		{
-			ft_putendl("inif2");
 			varenv->var = ft_strjoin("PWD=", home);
-		}
 		varenv = varenv->next;
 	}
-	ft_putendl("hm");
 	varenv = var1;
-	ft_putendl("wat");
 }
 
 void	revert_pwd(t_varenv *varenv)
@@ -282,25 +272,12 @@ void	change_dir(char **args, t_varenv *varenv)
 
 void	do_cd(char **args, t_varenv *varenv)
 {
-	ft_putendl("incd");
 	if (!args[1])
-	{
-		ft_putendl("ingopwd");
 		go_pwd(varenv);
-		ft_putendl("gopwd");
-	}
 	else if (!ft_strcmp(args[1], "-"))
-	{
-		ft_putendl("inrevert");
 		revert_pwd(varenv);
-		ft_putendl("revertdone");
-	}
 	else
-	{
-		ft_putendl("inchdir");
 		change_dir(args, varenv);
-		ft_putendl("chdirdone");
-	}
 }
 
 void	do_echo(char **args, t_varenv *varenv)
@@ -334,35 +311,17 @@ void	do_echo(char **args, t_varenv *varenv)
 void	dobuiltin(char **args, t_varenv *varenv)
 {
 	if (!ft_strcmp(args[0], "env"))
-	{
 		do_env(varenv, args);
-		ft_putendl("inenv");
-	}
 	else if (!ft_strcmp(args[0], "unsetenv") && args[1])
-	{
 		do_unsetenv(args, varenv);
-		ft_putendl("inunsetenv");
-	}
 	else if (!ft_strcmp(args[0], "unsetenv") && !args[1])
-	{
 		ft_putendl("unsetenv: not enough arguments");
-		ft_putendl("inunsetenv");
-	}
 	else if (!ft_strcmp(args[0], "setenv") && ft_strchr(args[1], '='))
-	{
 		do_setenv(args, varenv);
-		ft_putendl("insetenv");
-	}
 	else if (!ft_strcmp(args[0], "cd"))
-	{
 		do_cd(args, varenv);
-		ft_putendl("incd");
-	}
 	else if (!ft_strcmp(args[0], "echo"))
-	{
 		do_echo(args, varenv);
-		ft_putendl("inecho");
-	}
 }
 
 char	**unpack_path(t_varenv *varenv)
@@ -394,9 +353,6 @@ char	*unpack_pwd(t_varenv *varenv)
 			pwd = ft_strcpy(pwd, ft_strsplit(varenv->var, '=')[1]);
 		varenv = varenv->next;
 	}
-	ft_putendl("pwd is:");
-	ft_putendl(pwd);
-	ft_putendl("end pwd");
 	return (pwd);
 }
 
@@ -463,15 +419,8 @@ void	process(char **args, t_varenv *varenv)
 	else
 	{
 		pwd = unpack_pwd(varenv);
-		ft_putendl("path is:");
-		ft_putendl(ft_strjoin(ft_strjoin(pwd, "/"), args[0]));
-		ft_putendl("path end");
-		if (!access(ft_strjoin(ft_strjoin(pwd, "/"), args[0]), F_OK))
-		{
-			ft_putendl("inif3");
+		if (!access(ft_strjoin(ft_strjoin(pwd, "/"), args[0]), X_OK))
 			exec_process(ft_strjoin(ft_strjoin(pwd, "/"), args[0]), args, varenv);
-			ft_putendl("endif3");
-		}
 		else
 		{
 			ft_putstr("minishell: command not found: ");
@@ -521,20 +470,12 @@ int	main(int argc, char **argv, char **env)
 		{
 			free(line);
 			free(args);
-			ft_putendl("free done");
 			return (0);
 		}
 		else if (isbuiltin(args) == 1)
-		{
 			dobuiltin(args, varenv);
-			ft_putendl("dobuiltin done");
-		}
 		else if (isbuiltin(args) == 0)
-		{
-			ft_putendl("letsgo");
 			process(args, varenv);
-			ft_putendl("process done");
-		}
 	}
 	return (0);
 }
