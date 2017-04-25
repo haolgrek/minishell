@@ -6,7 +6,7 @@
 /*   By: rluder <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/11/19 16:16:02 by rluder            #+#    #+#             */
-/*   Updated: 2017/04/25 19:14:19 by rluder           ###   ########.fr       */
+/*   Updated: 2017/04/25 19:53:46 by rluder           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,7 +69,7 @@ int	isbuiltin(char **args)
 void	print_env(t_varenv *varenv, int izi)
 {
 	if (izi == 1)
-		return;
+		return ;
 	while (varenv)
 	{
 		if (varenv->var && ft_strcmp(varenv->var, "\0") != 0)
@@ -78,7 +78,7 @@ void	print_env(t_varenv *varenv, int izi)
 	}
 }
 
-void	do_env(t_varenv	*varenv, char **args)
+void	do_env(t_varenv *varenv, char **args)
 {
 	int	i;
 	int	izi;
@@ -87,7 +87,7 @@ void	do_env(t_varenv	*varenv, char **args)
 	if (!args[1])
 	{
 		print_env(varenv, izi);
-		return;
+		return ;
 	}
 	i = 1;
 	while (args[i] && (ft_strcmp(args[i], "-i") == 0 ||
@@ -104,7 +104,7 @@ void	do_env(t_varenv	*varenv, char **args)
 	if (!args[i])
 	{
 		print_env(varenv, izi);
-		return;
+		return ;
 	}
 	else if (ft_strchr(args[i], '='))
 	{
@@ -129,8 +129,8 @@ void	remove_node(t_varenv *start, t_varenv *varenv)
 	{
 		temp = start;
 		start = start->next;
-		free (temp);
-		return;
+		free(temp);
+		return ;
 	}
 	current = start->next;
 	previous = start;
@@ -140,13 +140,13 @@ void	remove_node(t_varenv *start, t_varenv *varenv)
 		{
 			temp = current;
 			previous->next = current->next;
-			free (temp);
-			return;
+			free(temp);
+			return ;
 		}
 		previous = current;
 		current = current->next;
 	}
-	return;
+	return ;
 }
 
 void	do_unsetenv(char **args, t_varenv *varenv)
@@ -175,8 +175,8 @@ void	do_unsetenv(char **args, t_varenv *varenv)
 
 void	do_setenv(char **args, t_varenv *varenv)
 {
-	int	i;
-	int j;
+	int			i;
+	int			j;
 	t_varenv	*start;
 	t_varenv	*tmp;
 
@@ -187,10 +187,11 @@ void	do_setenv(char **args, t_varenv *varenv)
 		varenv = start;
 		while (varenv)
 		{
-			if (!ft_strcmp(ft_strsplit(args[i], '=')[0], ft_strsplit(varenv->var, '=')[0]))
+			if (!ft_strcmp(ft_strsplit(args[i], '=')[0],
+				ft_strsplit(varenv->var, '=')[0]))
 			{
 				varenv->var = args[i];
-				return;
+				return ;
 			}
 			varenv = varenv->next;
 		}
@@ -282,10 +283,10 @@ void	do_cd(char **args, t_varenv *varenv)
 
 void	do_echo(char **args, t_varenv *varenv)
 {
-	int	addc;
-	int	start;
-	int	i;
-	char **args2;
+	int		addc;
+	int		start;
+	int		i;
+	char	**args2;
 
 	i = 1;
 	addc = 0;
@@ -337,10 +338,9 @@ char	**unpack_path(t_varenv *varenv)
 		varenv = varenv->next;
 	}
 	path = ft_strsplit(unpack, ':');
-	free (unpack);
+	free(unpack);
 	return (path);
 }
-
 
 char	*unpack_pwd(t_varenv *varenv)
 {
@@ -361,7 +361,7 @@ char	**redo_env(t_varenv *varenv)
 	t_varenv	*start;
 	int			i;
 	char		**env;
-	
+
 	i = 0;
 	start = varenv;
 	while (varenv)
@@ -415,12 +415,14 @@ void	process(char **args, t_varenv *varenv)
 			i++;
 	}
 	if (exists == 1)
-		exec_process(ft_strjoin(ft_strjoin(path[i], "/"), args[0]), args, varenv);
+		exec_process(ft_strjoin(ft_strjoin(path[i], "/"),
+			args[0]), args, varenv);
 	else
 	{
 		pwd = unpack_pwd(varenv);
 		if (!access(ft_strjoin(ft_strjoin(pwd, "/"), args[0]), X_OK))
-			exec_process(ft_strjoin(ft_strjoin(pwd, "/"), args[0]), args, varenv);
+			exec_process(ft_strjoin(ft_strjoin(pwd, "/"),
+				args[0]), args, varenv);
 		else
 		{
 			ft_putstr("minishell: command not found: ");
