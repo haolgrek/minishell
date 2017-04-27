@@ -6,7 +6,7 @@
 /*   By: rluder <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/11/19 16:16:02 by rluder            #+#    #+#             */
-/*   Updated: 2017/04/25 19:53:46 by rluder           ###   ########.fr       */
+/*   Updated: 2017/04/27 08:08:35 by rluder           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,7 @@ t_varenv	*create_varenv(char *env)
 		return (NULL);
 	varenv->var = env;
 	varenv->next = NULL;
+	ft_putendl("created");
 	return (varenv);
 }
 
@@ -184,21 +185,26 @@ void	do_setenv(char **args, t_varenv *varenv)
 	start = varenv;
 	while (args[i])
 	{
+		j = 0;
 		varenv = start;
-		while (varenv)
+		while (varenv && args[i])
 		{
-			if (!ft_strcmp(ft_strsplit(args[i], '=')[0],
-				ft_strsplit(varenv->var, '=')[0]))
+			if (varenv->var)
 			{
-				varenv->var = args[i];
-				return ;
+				if (!ft_strcmp(ft_strsplit(args[i], '=')[0],
+					ft_strsplit(varenv->var, '=')[0]))
+				{
+					varenv->var = args[i];
+					j = 1;
+				}
 			}
 			varenv = varenv->next;
 		}
 		varenv = start;
 		while (varenv->next)
 			varenv = varenv->next;
-		varenv->next = create_varenv(args[i]);
+		if (j != 1)
+			varenv->next = create_varenv(args[i]);
 		i++;
 	}
 	varenv = start;
@@ -258,9 +264,9 @@ void	revert_pwd(t_varenv *varenv)
 	while (varenv)
 	{
 		if (!ft_strcmp("PWD", ft_strsplit(varenv->var, '=')[0]))
-			varenv->var = ft_strcpy(varenv->var, ft_strjoin("PWD=", pwd));
+			varenv->var = ft_strcpy(varenv->var, ft_strjoin("PWD=", oldpwd));
 		if (!ft_strcmp("OLDPWD", ft_strsplit(varenv->var, '=')[0]))
-			varenv->var = ft_strcpy(varenv->var, ft_strjoin("OLDPWD=", oldpwd));
+			varenv->var = ft_strcpy(varenv->var, ft_strjoin("OLDPWD=", pwd));
 		varenv = varenv->next;
 	}
 	varenv = start;
@@ -317,6 +323,8 @@ void	dobuiltin(char **args, t_varenv *varenv)
 		do_unsetenv(args, varenv);
 	else if (!ft_strcmp(args[0], "unsetenv") && !args[1])
 		ft_putendl("unsetenv: not enough arguments");
+	else if (!ft_strcmp(args[0], "setenv") && !args[1])
+		ft_putendl("setenv: not enough arguments");
 	else if (!ft_strcmp(args[0], "setenv") && ft_strchr(args[1], '='))
 		do_setenv(args, varenv);
 	else if (!ft_strcmp(args[0], "cd"))
@@ -406,6 +414,12 @@ void	process(char **args, t_varenv *varenv)
 
 	i = 0;
 	exists = 0;
+	if (!varenv->var)
+	{
+		ft_putstr("minishell: command not found: ");
+		ft_putendl(args[0]);
+		return ;
+	}
 	path = unpack_path(varenv);
 	while (exists != 1 && path[i])
 	{
@@ -460,6 +474,8 @@ int	main(int argc, char **argv, char **env)
 	if (argc != 1 && !argv)
 		return (0);
 	varenv = stockenv(env);
+	if (!varenv)
+		varenv = create_varenv(NULL);
 	while (1)
 	{
 		ft_putstr("$>");
@@ -468,16 +484,19 @@ int	main(int argc, char **argv, char **env)
 		line = ft_strdup(input);
 		ft_memdel((void**)&input);
 		args = ft_strsplit(notabs(line), ' ');
-		if (!ft_strcmp(args[0], "exit"))
+		if (args[0])
 		{
-			free(line);
-			free(args);
-			return (0);
-		}
-		else if (isbuiltin(args) == 1)
+			if (!ft_strcmp(args[0], "exit"))
+			{
+				free(line);
+				free(args);
+				return (0);
+			}
+			else if (isbuiltin(args) == 1)
 			dobuiltin(args, varenv);
-		else if (isbuiltin(args) == 0)
-			process(args, varenv);
+			else if (isbuiltin(args) == 0)
+				process(args, varenv);
+		}
 	}
 	return (0);
 }
