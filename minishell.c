@@ -6,7 +6,7 @@
 /*   By: rluder <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/11/19 16:16:02 by rluder            #+#    #+#             */
-/*   Updated: 2017/04/27 08:08:35 by rluder           ###   ########.fr       */
+/*   Updated: 2017/04/27 09:13:47 by rluder           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -120,58 +120,83 @@ void	do_env(t_varenv *varenv, char **args)
 	}
 }
 
-void	remove_node(t_varenv *start, t_varenv *varenv)
+t_varenv	*remove_node(t_varenv *start, t_varenv *varenv)
 {
 	t_varenv	*temp;
 	t_varenv	*current;
 	t_varenv	*previous;
 
-	if (ft_strcmp(varenv->var, start->var) == 0)
+	if (start->var)
 	{
-		temp = start;
-		start = start->next;
-		free(temp);
-		return ;
+		ft_putendl("1");
+		if (ft_strcmp(varenv->var, start->var) == 0)
+		{
+			ft_putendl("2");
+			temp = start;
+			start = start->next;
+			free(temp);
+			return (start);
+		}
 	}
 	current = start->next;
 	previous = start;
+	ft_putendl("3");
 	while (current != NULL && previous != NULL)
 	{
-		if (ft_strcmp(varenv->var, current->var) == 0)
+		ft_putendl("4");
+		if (varenv->var)
 		{
-			temp = current;
-			previous->next = current->next;
-			free(temp);
-			return ;
+			ft_putendl("5");
+			if (ft_strcmp(varenv->var, current->var) == 0)
+			{
+				ft_putendl("6");
+				temp = current;
+				previous->next = current->next;
+				free(temp);
+				return (start);
+			}
 		}
 		previous = current;
 		current = current->next;
 	}
-	return ;
+	return (start);
 }
 
-void	do_unsetenv(char **args, t_varenv *varenv)
+t_varenv	*do_unsetenv(char **args, t_varenv *varenv)
 {
 	int			i;
+	int			j;
 	t_varenv	*start;
 	t_varenv	*temp;
 
 	i = 1;
+	j = 0;
+	if (!varenv->var && !varenv->next)
+		return (varenv);
 	start = varenv;
 	while (args[i])
 	{
+		ft_putendl("while1");
 		varenv = start;
-		while (varenv)
+		while (varenv && args[i])
 		{
-			if (!ft_strcmp(args[i], ft_strsplit(varenv->var, '=')[0]))
+			ft_putendl("while2");
+			if (varenv->var)
 			{
-				remove_node(start, varenv);
+				ft_putendl("inif1");
+				if (!ft_strcmp(args[i], ft_strsplit(varenv->var, '=')[0]))
+				{
+					ft_putendl("inif2");
+					start = remove_node(start, varenv);
+				}
 			}
 			varenv = varenv->next;
 		}
 		i++;
 	}
 	varenv = start;
+	ft_putendl("end");
+	return (start);
 }
 
 void	do_setenv(char **args, t_varenv *varenv)
@@ -317,10 +342,10 @@ void	do_echo(char **args, t_varenv *varenv)
 
 void	dobuiltin(char **args, t_varenv *varenv)
 {
-	if (!ft_strcmp(args[0], "env"))
+	if (!ft_strcmp(args[0], "unsetenv") && args[1])
+		varenv = do_unsetenv(args, varenv);
+	else if (!ft_strcmp(args[0], "env"))
 		do_env(varenv, args);
-	else if (!ft_strcmp(args[0], "unsetenv") && args[1])
-		do_unsetenv(args, varenv);
 	else if (!ft_strcmp(args[0], "unsetenv") && !args[1])
 		ft_putendl("unsetenv: not enough arguments");
 	else if (!ft_strcmp(args[0], "setenv") && !args[1])
@@ -493,7 +518,7 @@ int	main(int argc, char **argv, char **env)
 				return (0);
 			}
 			else if (isbuiltin(args) == 1)
-			dobuiltin(args, varenv);
+				dobuiltin(args, varenv);
 			else if (isbuiltin(args) == 0)
 				process(args, varenv);
 		}
