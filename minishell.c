@@ -6,7 +6,7 @@
 /*   By: rluder <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/11/19 16:16:02 by rluder            #+#    #+#             */
-/*   Updated: 2017/04/27 09:13:47 by rluder           ###   ########.fr       */
+/*   Updated: 2017/05/02 21:22:54 by rluder           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -418,7 +418,9 @@ void	exec_process(char *path, char **args, t_varenv *varenv)
 	id_t	pid;
 	int		status;
 	char	**env;
-
+	
+	ft_putendl("PATH:");
+	ft_putendl(path);
 	env = redo_env(varenv);
 	pid = fork();
 	if (pid > 0)
@@ -453,6 +455,7 @@ void	process(char **args, t_varenv *varenv)
 		else
 			i++;
 	}
+	ft_putendl("here");
 	if (exists == 1)
 		exec_process(ft_strjoin(ft_strjoin(path[i], "/"),
 			args[0]), args, varenv);
@@ -464,8 +467,17 @@ void	process(char **args, t_varenv *varenv)
 				args[0]), args, varenv);
 		else
 		{
-			ft_putstr("minishell: command not found: ");
-			ft_putendl(args[0]);
+			if (args[0][0] == '/')
+			{
+				ft_putendl("aha");
+				exec_process(args[0], args, varenv);
+			}
+			else
+			{
+				ft_putendl("this one");
+				ft_putstr("minishell: command not found: ");
+				ft_putendl(args[0]);
+			}
 		}
 	}
 }
