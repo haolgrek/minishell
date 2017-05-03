@@ -6,7 +6,7 @@
 /*   By: rluder <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/11/19 16:16:02 by rluder            #+#    #+#             */
-/*   Updated: 2017/05/02 21:22:54 by rluder           ###   ########.fr       */
+/*   Updated: 2017/05/03 15:20:53 by rluder           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 #include <stdlib.h>
 #include <sys/wait.h>
 #include <signal.h>
+#include <dirent.h>
 #include "libft/libft.h"
 #include "get_next_line.h"
 #include "minishell.h"
@@ -26,7 +27,8 @@ t_varenv	*create_varenv(char *env)
 	varenv = malloc(sizeof(t_varenv));
 	if (!varenv)
 		return (NULL);
-	varenv->var = env;
+	varenv->var = malloc(sizeof(char) * 256);
+	varenv->var = ft_strcpy(varenv->var, env);
 	varenv->next = NULL;
 	ft_putendl("created");
 	return (varenv);
@@ -295,11 +297,79 @@ void	revert_pwd(t_varenv *varenv)
 		varenv = varenv->next;
 	}
 	varenv = start;
+	free (pwd);
+	free (oldpwd);
+}
+
+void	new_pwd(char *arg, t_varenv *varenv)
+{
+	t_varenv	*start;
+	char		*buf;
+	char		*cwd;
+
+	buf = malloc(sizeof(char) * 256);
+	cwd = getcwd(buf, 255);
+	ft_putendl("cwd is: ");
+	ft_putendl(cwd);
+	ft_putendl("end cwd");
+	start = varenv;
+	while (varenv)
+	{
+		if (!ft_strcmp("PWD", ft_strsplit(varenv->var, '=')[0]))
+			varenv->var = ft_strcpy(varenv->var, ft_strjoin("PWD=", cwd));
+		varenv = varenv->next;
+	}
+	free (buf);
 }
 
 void	change_dir(char **args, t_varenv *varenv)
 {
-	ft_putendl("nope, not done");
+	char		*pwd;
+	t_varenv	*start;
+
+	start = varenv;
+	pwd = malloc(sizeof(char) * 256);
+	if (args[2])
+	{
+		ft_putstr("cd: string not in pwd: ");
+		ft_putendl(args[2]);
+		return ;
+	}
+	while (varenv)
+	{
+		if (!ft_strcmp("PWD", ft_strsplit(varenv->var, '=')[0]))
+			pwd = ft_strcpy(pwd, ft_strsplit(varenv->var, '=')[1]);
+		varenv = varenv->next;
+	}
+	if (args[1][0] == '/')
+	{
+		if (opendir(args[1]))
+		{
+			chdir(args[1]);
+			new_pwd(args[1], start);
+		}
+		else
+		{
+			ft_putstr("cd: no such file or directory: ");
+			ft_putendl(args[1]);
+			return ;
+		}
+	}
+	else
+	{
+		if (opendir(ft_strjoin(ft_strjoin(pwd, "/"), args[1])))
+		{
+			chdir (ft_strjoin(ft_strjoin(pwd, "/"), args[1]));
+			new_pwd(ft_strjoin(ft_strjoin(pwd, "/"), args[1]), start);
+		}
+		else
+		{
+			ft_putstr("cd: no such file or directory: ");
+			ft_putendl(args[1]);
+		}
+	}
+	ft_putendl("end cd");
+	free (pwd);
 }
 
 void	do_cd(char **args, t_varenv *varenv)
@@ -470,7 +540,13 @@ void	process(char **args, t_varenv *varenv)
 			if (args[0][0] == '/')
 			{
 				ft_putendl("aha");
-				exec_process(args[0], args, varenv);
+				if (!access(args[0], X_OK))
+					exec_process(args[0], args, varenv);
+				else
+				{
+					ft_putstr("minishell: command not found: ");
+					ft_putendl(args[0]);
+				}
 			}
 			else
 			{
