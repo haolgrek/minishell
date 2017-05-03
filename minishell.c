@@ -6,7 +6,7 @@
 /*   By: rluder <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/11/19 16:16:02 by rluder            #+#    #+#             */
-/*   Updated: 2017/05/03 15:20:53 by rluder           ###   ########.fr       */
+/*   Updated: 2017/05/03 16:54:42 by rluder           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,12 +25,13 @@ t_varenv	*create_varenv(char *env)
 	t_varenv	*varenv;
 
 	varenv = malloc(sizeof(t_varenv));
-	if (!varenv)
-		return (NULL);
-	varenv->var = malloc(sizeof(char) * 256);
-	varenv->var = ft_strcpy(varenv->var, env);
+	ft_bzero(varenv, sizeof(t_varenv));
+	if (env)
+	{
+		varenv->var = malloc(sizeof(char) * 256);
+		varenv->var = ft_strcpy(varenv->var, env);
+	}
 	varenv->next = NULL;
-	ft_putendl("created");
 	return (varenv);
 }
 
@@ -81,6 +82,26 @@ void	print_env(t_varenv *varenv, int izi)
 	}
 }
 
+void	do_env2(t_varenv *varenv, char **args, int i, int izi)
+{
+	if (!args[i])
+	{
+		print_env(varenv, izi);
+		return ;
+	}
+	else if (ft_strchr(args[i], '='))
+	{
+		print_env(varenv, izi);
+		do_new_setenv(args, i);
+	}
+	else
+	{
+		ft_putstr("env: ");
+		ft_putstr(args[i]);
+		ft_putendl(": No such file or directory");
+	}
+}
+
 void	do_env(t_varenv *varenv, char **args)
 {
 	int	i;
@@ -104,59 +125,53 @@ void	do_env(t_varenv *varenv, char **args)
 		if (args[i] && ft_strcmp(args[i], "env") == 0)
 			i++;
 	}
-	if (!args[i])
-	{
-		print_env(varenv, izi);
-		return ;
-	}
-	else if (ft_strchr(args[i], '='))
-	{
-		print_env(varenv, izi);
-		do_new_setenv(args, i);
-	}
-	else
-	{
-		ft_putstr("env: ");
-		ft_putstr(args[i]);
-		ft_putendl(": No such file or directory");
-	}
+	do_env2(varenv, args, i, izi);
+}
+
+t_varenv	*remove_start(t_varenv *start)
+{
+	t_varenv	*temp;
+
+	temp = start;
+	start = start->next;
+	free(temp);
+	return(start);
+}
+
+t_varenv	*remove_current(t_varenv *start, t_varenv *cur, t_varenv *prev)
+{
+	t_varenv	*temp;
+
+	temp = cur;
+	prev->next = cur->next;
+	free(temp);
+	return(start);
 }
 
 t_varenv	*remove_node(t_varenv *start, t_varenv *varenv)
 {
-	t_varenv	*temp;
+//	t_varenv	*temp;
 	t_varenv	*current;
 	t_varenv	*previous;
 
 	if (start->var)
 	{
-		ft_putendl("1");
 		if (ft_strcmp(varenv->var, start->var) == 0)
 		{
-			ft_putendl("2");
-			temp = start;
-			start = start->next;
-			free(temp);
-			return (start);
+//			temp = start;
+//			start = start->next;
+//			free(temp);
+			return (remove_start(start));
 		}
 	}
 	current = start->next;
 	previous = start;
-	ft_putendl("3");
 	while (current != NULL && previous != NULL)
 	{
-		ft_putendl("4");
 		if (varenv->var)
 		{
-			ft_putendl("5");
 			if (ft_strcmp(varenv->var, current->var) == 0)
-			{
-				ft_putendl("6");
-				temp = current;
-				previous->next = current->next;
-				free(temp);
-				return (start);
-			}
+				return (remove_current(start, current, previous));
 		}
 		previous = current;
 		current = current->next;
@@ -178,26 +193,19 @@ t_varenv	*do_unsetenv(char **args, t_varenv *varenv)
 	start = varenv;
 	while (args[i])
 	{
-		ft_putendl("while1");
 		varenv = start;
 		while (varenv && args[i])
 		{
-			ft_putendl("while2");
 			if (varenv->var)
 			{
-				ft_putendl("inif1");
 				if (!ft_strcmp(args[i], ft_strsplit(varenv->var, '=')[0]))
-				{
-					ft_putendl("inif2");
 					start = remove_node(start, varenv);
-				}
 			}
 			varenv = varenv->next;
 		}
 		i++;
 	}
 	varenv = start;
-	ft_putendl("end");
 	return (start);
 }
 
@@ -209,18 +217,29 @@ void	do_setenv(char **args, t_varenv *varenv)
 	t_varenv	*tmp;
 
 	i = 1;
+	ft_putendl("1");
+	if (!varenv)
+		varenv = create_varenv(NULL);
+	ft_putendl("2");
 	start = varenv;
+	ft_putendl("3");
 	while (args[i])
 	{
+		ft_putendl("4");
 		j = 0;
 		varenv = start;
-		while (varenv && args[i])
+		while (varenv->var && args[i])
 		{
+			ft_putendl("5");
 			if (varenv->var)
 			{
+				ft_putendl("varenv var is");
+				ft_putendl(varenv->var);
+				ft_putendl("6");
 				if (!ft_strcmp(ft_strsplit(args[i], '=')[0],
 					ft_strsplit(varenv->var, '=')[0]))
 				{
+					ft_putendl("7");
 					varenv->var = args[i];
 					j = 1;
 				}
@@ -297,8 +316,8 @@ void	revert_pwd(t_varenv *varenv)
 		varenv = varenv->next;
 	}
 	varenv = start;
-	free (pwd);
-	free (oldpwd);
+	free(pwd);
+	free(oldpwd);
 }
 
 void	new_pwd(char *arg, t_varenv *varenv)
@@ -309,9 +328,6 @@ void	new_pwd(char *arg, t_varenv *varenv)
 
 	buf = malloc(sizeof(char) * 256);
 	cwd = getcwd(buf, 255);
-	ft_putendl("cwd is: ");
-	ft_putendl(cwd);
-	ft_putendl("end cwd");
 	start = varenv;
 	while (varenv)
 	{
@@ -319,7 +335,7 @@ void	new_pwd(char *arg, t_varenv *varenv)
 			varenv->var = ft_strcpy(varenv->var, ft_strjoin("PWD=", cwd));
 		varenv = varenv->next;
 	}
-	free (buf);
+	free(buf);
 }
 
 void	change_dir(char **args, t_varenv *varenv)
@@ -359,7 +375,7 @@ void	change_dir(char **args, t_varenv *varenv)
 	{
 		if (opendir(ft_strjoin(ft_strjoin(pwd, "/"), args[1])))
 		{
-			chdir (ft_strjoin(ft_strjoin(pwd, "/"), args[1]));
+			chdir(ft_strjoin(ft_strjoin(pwd, "/"), args[1]));
 			new_pwd(ft_strjoin(ft_strjoin(pwd, "/"), args[1]), start);
 		}
 		else
@@ -368,8 +384,7 @@ void	change_dir(char **args, t_varenv *varenv)
 			ft_putendl(args[1]);
 		}
 	}
-	ft_putendl("end cd");
-	free (pwd);
+	free(pwd);
 }
 
 void	do_cd(char **args, t_varenv *varenv)
@@ -413,7 +428,12 @@ void	do_echo(char **args, t_varenv *varenv)
 void	dobuiltin(char **args, t_varenv *varenv)
 {
 	if (!ft_strcmp(args[0], "unsetenv") && args[1])
-		varenv = do_unsetenv(args, varenv);
+	{
+		if (varenv)
+			varenv = do_unsetenv(args, varenv);
+		else
+			return ;
+	}
 	else if (!ft_strcmp(args[0], "env"))
 		do_env(varenv, args);
 	else if (!ft_strcmp(args[0], "unsetenv") && !args[1])
@@ -488,7 +508,7 @@ void	exec_process(char *path, char **args, t_varenv *varenv)
 	id_t	pid;
 	int		status;
 	char	**env;
-	
+
 	ft_putendl("PATH:");
 	ft_putendl(path);
 	env = redo_env(varenv);
@@ -511,7 +531,7 @@ void	process(char **args, t_varenv *varenv)
 
 	i = 0;
 	exists = 0;
-	if (!varenv->var)
+	if (!varenv)
 	{
 		ft_putstr("minishell: command not found: ");
 		ft_putendl(args[0]);
@@ -525,7 +545,6 @@ void	process(char **args, t_varenv *varenv)
 		else
 			i++;
 	}
-	ft_putendl("here");
 	if (exists == 1)
 		exec_process(ft_strjoin(ft_strjoin(path[i], "/"),
 			args[0]), args, varenv);
@@ -539,7 +558,6 @@ void	process(char **args, t_varenv *varenv)
 		{
 			if (args[0][0] == '/')
 			{
-				ft_putendl("aha");
 				if (!access(args[0], X_OK))
 					exec_process(args[0], args, varenv);
 				else
@@ -550,7 +568,6 @@ void	process(char **args, t_varenv *varenv)
 			}
 			else
 			{
-				ft_putendl("this one");
 				ft_putstr("minishell: command not found: ");
 				ft_putendl(args[0]);
 			}
@@ -586,9 +603,12 @@ int	main(int argc, char **argv, char **env)
 	input = NULL;
 	if (argc != 1 && !argv)
 		return (0);
+	ft_putendl("start");
 	varenv = stockenv(env);
-	if (!varenv)
-		varenv = create_varenv(NULL);
+	ft_putendl("stocked");
+//	if (!varenv)
+//		varenv = create_varenv(NULL);
+	ft_putendl("created");
 	while (1)
 	{
 		ft_putstr("$>");
