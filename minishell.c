@@ -6,7 +6,7 @@
 /*   By: rluder <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/11/19 16:16:02 by rluder            #+#    #+#             */
-/*   Updated: 2017/05/03 16:54:42 by rluder           ###   ########.fr       */
+/*   Updated: 2017/05/05 20:21:40 by rluder           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -135,7 +135,7 @@ t_varenv	*remove_start(t_varenv *start)
 	temp = start;
 	start = start->next;
 	free(temp);
-	return(start);
+	return (start);
 }
 
 t_varenv	*remove_current(t_varenv *start, t_varenv *cur, t_varenv *prev)
@@ -145,24 +145,18 @@ t_varenv	*remove_current(t_varenv *start, t_varenv *cur, t_varenv *prev)
 	temp = cur;
 	prev->next = cur->next;
 	free(temp);
-	return(start);
+	return (start);
 }
 
 t_varenv	*remove_node(t_varenv *start, t_varenv *varenv)
 {
-//	t_varenv	*temp;
 	t_varenv	*current;
 	t_varenv	*previous;
 
 	if (start->var)
 	{
 		if (ft_strcmp(varenv->var, start->var) == 0)
-		{
-//			temp = start;
-//			start = start->next;
-//			free(temp);
 			return (remove_start(start));
-		}
 	}
 	current = start->next;
 	previous = start;
@@ -209,7 +203,7 @@ t_varenv	*do_unsetenv(char **args, t_varenv *varenv)
 	return (start);
 }
 
-void	do_setenv(char **args, t_varenv *varenv)
+t_varenv	*do_setenv(char **args, t_varenv *varenv)
 {
 	int			i;
 	int			j;
@@ -217,29 +211,20 @@ void	do_setenv(char **args, t_varenv *varenv)
 	t_varenv	*tmp;
 
 	i = 1;
-	ft_putendl("1");
 	if (!varenv)
 		varenv = create_varenv(NULL);
-	ft_putendl("2");
 	start = varenv;
-	ft_putendl("3");
 	while (args[i])
 	{
-		ft_putendl("4");
 		j = 0;
 		varenv = start;
-		while (varenv->var && args[i])
+		while (varenv && varenv->var && args[i])
 		{
-			ft_putendl("5");
 			if (varenv->var)
 			{
-				ft_putendl("varenv var is");
-				ft_putendl(varenv->var);
-				ft_putendl("6");
 				if (!ft_strcmp(ft_strsplit(args[i], '=')[0],
 					ft_strsplit(varenv->var, '=')[0]))
 				{
-					ft_putendl("7");
 					varenv->var = args[i];
 					j = 1;
 				}
@@ -254,6 +239,7 @@ void	do_setenv(char **args, t_varenv *varenv)
 		i++;
 	}
 	varenv = start;
+	return (varenv);
 }
 
 void	go_pwd(t_varenv *varenv)
@@ -425,27 +411,27 @@ void	do_echo(char **args, t_varenv *varenv)
 		ft_putchar('\n');
 }
 
-void	dobuiltin(char **args, t_varenv *varenv)
+void	dobuiltin(char **args, t_varenv **varenv)
 {
 	if (!ft_strcmp(args[0], "unsetenv") && args[1])
 	{
 		if (varenv)
-			varenv = do_unsetenv(args, varenv);
+			*varenv = do_unsetenv(args, *varenv);
 		else
 			return ;
 	}
 	else if (!ft_strcmp(args[0], "env"))
-		do_env(varenv, args);
+		do_env(*varenv, args);
 	else if (!ft_strcmp(args[0], "unsetenv") && !args[1])
 		ft_putendl("unsetenv: not enough arguments");
 	else if (!ft_strcmp(args[0], "setenv") && !args[1])
 		ft_putendl("setenv: not enough arguments");
 	else if (!ft_strcmp(args[0], "setenv") && ft_strchr(args[1], '='))
-		do_setenv(args, varenv);
+		*varenv = do_setenv(args, *varenv);
 	else if (!ft_strcmp(args[0], "cd"))
-		do_cd(args, varenv);
+		do_cd(args, *varenv);
 	else if (!ft_strcmp(args[0], "echo"))
-		do_echo(args, varenv);
+		do_echo(args, *varenv);
 }
 
 char	**unpack_path(t_varenv *varenv)
@@ -509,8 +495,6 @@ void	exec_process(char *path, char **args, t_varenv *varenv)
 	int		status;
 	char	**env;
 
-	ft_putendl("PATH:");
-	ft_putendl(path);
 	env = redo_env(varenv);
 	pid = fork();
 	if (pid > 0)
@@ -531,7 +515,7 @@ void	process(char **args, t_varenv *varenv)
 
 	i = 0;
 	exists = 0;
-	if (!varenv)
+	if (!varenv || !varenv->var)
 	{
 		ft_putstr("minishell: command not found: ");
 		ft_putendl(args[0]);
@@ -603,12 +587,7 @@ int	main(int argc, char **argv, char **env)
 	input = NULL;
 	if (argc != 1 && !argv)
 		return (0);
-	ft_putendl("start");
 	varenv = stockenv(env);
-	ft_putendl("stocked");
-//	if (!varenv)
-//		varenv = create_varenv(NULL);
-	ft_putendl("created");
 	while (1)
 	{
 		ft_putstr("$>");
@@ -626,7 +605,7 @@ int	main(int argc, char **argv, char **env)
 				return (0);
 			}
 			else if (isbuiltin(args) == 1)
-				dobuiltin(args, varenv);
+				dobuiltin(args, &varenv);
 			else if (isbuiltin(args) == 0)
 				process(args, varenv);
 		}
