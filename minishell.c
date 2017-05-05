@@ -6,7 +6,7 @@
 /*   By: rluder <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/11/19 16:16:02 by rluder            #+#    #+#             */
-/*   Updated: 2017/05/05 20:21:40 by rluder           ###   ########.fr       */
+/*   Updated: 2017/05/05 22:03:54 by rluder           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -176,12 +176,10 @@ t_varenv	*remove_node(t_varenv *start, t_varenv *varenv)
 t_varenv	*do_unsetenv(char **args, t_varenv *varenv)
 {
 	int			i;
-	int			j;
 	t_varenv	*start;
 	t_varenv	*temp;
 
 	i = 1;
-	j = 0;
 	if (!varenv->var && !varenv->next)
 		return (varenv);
 	start = varenv;
@@ -208,13 +206,12 @@ t_varenv	*do_setenv(char **args, t_varenv *varenv)
 	int			i;
 	int			j;
 	t_varenv	*start;
-	t_varenv	*tmp;
 
 	i = 1;
 	if (!varenv)
 		varenv = create_varenv(NULL);
 	start = varenv;
-	while (args[i])
+	while (args[i++])
 	{
 		j = 0;
 		varenv = start;
@@ -236,10 +233,8 @@ t_varenv	*do_setenv(char **args, t_varenv *varenv)
 			varenv = varenv->next;
 		if (j != 1)
 			varenv->next = create_varenv(args[i]);
-		i++;
 	}
-	varenv = start;
-	return (varenv);
+	return (varenv = start);
 }
 
 void	go_pwd(t_varenv *varenv)
@@ -324,6 +319,35 @@ void	new_pwd(char *arg, t_varenv *varenv)
 	free(buf);
 }
 
+void	chdir_slash(char **args, t_varenv *start)
+{
+	if (opendir(args[1]))
+	{
+		chdir(args[1]);
+		new_pwd(args[1], start);
+	}
+	else
+	{
+		ft_putstr("cd: no such file or directory: ");
+		ft_putendl(args[1]);
+		return ;
+	}
+}
+
+void	chdir_new(char *pwd, char **args, t_varenv *start)
+{
+	if (opendir(ft_strjoin(ft_strjoin(pwd, "/"), args[1])))
+	{
+		chdir(ft_strjoin(ft_strjoin(pwd, "/"), args[1]));
+		new_pwd(ft_strjoin(ft_strjoin(pwd, "/"), args[1]), start);
+	}
+	else
+	{
+		ft_putstr("cd: no such file or directory: ");
+		ft_putendl(args[1]);
+	}
+}
+
 void	change_dir(char **args, t_varenv *varenv)
 {
 	char		*pwd;
@@ -344,32 +368,9 @@ void	change_dir(char **args, t_varenv *varenv)
 		varenv = varenv->next;
 	}
 	if (args[1][0] == '/')
-	{
-		if (opendir(args[1]))
-		{
-			chdir(args[1]);
-			new_pwd(args[1], start);
-		}
-		else
-		{
-			ft_putstr("cd: no such file or directory: ");
-			ft_putendl(args[1]);
-			return ;
-		}
-	}
+		chdir_slash(args, start);
 	else
-	{
-		if (opendir(ft_strjoin(ft_strjoin(pwd, "/"), args[1])))
-		{
-			chdir(ft_strjoin(ft_strjoin(pwd, "/"), args[1]));
-			new_pwd(ft_strjoin(ft_strjoin(pwd, "/"), args[1]), start);
-		}
-		else
-		{
-			ft_putstr("cd: no such file or directory: ");
-			ft_putendl(args[1]);
-		}
-	}
+		chdir_new(pwd, args, start);
 	free(pwd);
 }
 
