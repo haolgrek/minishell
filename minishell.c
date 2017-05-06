@@ -6,7 +6,7 @@
 /*   By: rluder <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/11/19 16:16:02 by rluder            #+#    #+#             */
-/*   Updated: 2017/05/05 22:03:54 by rluder           ###   ########.fr       */
+/*   Updated: 2017/05/06 03:27:23 by rluder           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@
 #include "get_next_line.h"
 #include "minishell.h"
 
-t_varenv	*create_varenv(char *env)
+/*t_varenv	*create_varenv(char *env)
 {
 	t_varenv	*varenv;
 
@@ -58,7 +58,7 @@ t_varenv	*stockenv(char **env)
 		}
 	}
 	return (varenv[0]);
-}
+}*/
 
 int	isbuiltin(char **args)
 {
@@ -201,6 +201,27 @@ t_varenv	*do_unsetenv(char **args, t_varenv *varenv)
 	return (start);
 }
 
+int	change_arg(t_varenv *varenv, char **args, int i)
+{
+	int j;
+
+	j = 0;
+	while (varenv && varenv->var && args[i])
+	{
+		if (varenv->var)
+		{
+			if (!ft_strcmp(ft_strsplit(args[i], '=')[0],
+				ft_strsplit(varenv->var, '=')[0]))
+			{
+				varenv->var = args[i];
+				j = 1;
+			}
+		}
+		varenv = varenv->next;
+	}
+	return (j);
+}
+
 t_varenv	*do_setenv(char **args, t_varenv *varenv)
 {
 	int			i;
@@ -211,33 +232,22 @@ t_varenv	*do_setenv(char **args, t_varenv *varenv)
 	if (!varenv)
 		varenv = create_varenv(NULL);
 	start = varenv;
-	while (args[i++])
+	while (args[i])
 	{
 		j = 0;
 		varenv = start;
-		while (varenv && varenv->var && args[i])
-		{
-			if (varenv->var)
-			{
-				if (!ft_strcmp(ft_strsplit(args[i], '=')[0],
-					ft_strsplit(varenv->var, '=')[0]))
-				{
-					varenv->var = args[i];
-					j = 1;
-				}
-			}
-			varenv = varenv->next;
-		}
+		j = change_arg(varenv, args, i);
 		varenv = start;
 		while (varenv->next)
 			varenv = varenv->next;
 		if (j != 1)
 			varenv->next = create_varenv(args[i]);
+		i++;
 	}
-	return (varenv = start);
+	return (start);
 }
 
-void	go_pwd(t_varenv *varenv)
+/*void	go_pwd(t_varenv *varenv)
 {
 	t_varenv	*var1;
 	char		*home;
@@ -265,6 +275,26 @@ void	go_pwd(t_varenv *varenv)
 	varenv = var1;
 }
 
+void	revertwhile1(t_varenv *varenv, char *pwd)
+{
+	while (varenv)
+	{
+		if (!ft_strcmp("PWD", ft_strsplit(varenv->var, '=')[0]))
+			pwd = ft_strcpy(pwd, ft_strsplit(varenv->var, '=')[1]);
+		varenv = varenv->next;
+	}
+}
+
+void	revertwhile2(t_varenv *varenv, char *oldpwd)
+{
+	while (varenv)
+	{
+		if (!ft_strcmp("OLDPWD", ft_strsplit(varenv->var, '=')[0]))
+			oldpwd = ft_strcpy(oldpwd, ft_strsplit(varenv->var, '=')[1]);
+		varenv = varenv->next;
+	}
+}
+
 void	revert_pwd(t_varenv *varenv)
 {
 	char		*pwd;
@@ -274,19 +304,9 @@ void	revert_pwd(t_varenv *varenv)
 	start = varenv;
 	pwd = malloc(sizeof(char) * 256);
 	oldpwd = malloc(sizeof(char) * 256);
-	while (varenv)
-	{
-		if (!ft_strcmp("PWD", ft_strsplit(varenv->var, '=')[0]))
-			pwd = ft_strcpy(pwd, ft_strsplit(varenv->var, '=')[1]);
-		varenv = varenv->next;
-	}
+	revertwhile1(varenv, pwd);
 	varenv = start;
-	while (varenv)
-	{
-		if (!ft_strcmp("OLDPWD", ft_strsplit(varenv->var, '=')[0]))
-			oldpwd = ft_strcpy(oldpwd, ft_strsplit(varenv->var, '=')[1]);
-		varenv = varenv->next;
-	}
+	revertwhile2(varenv, oldpwd);
 	varenv = start;
 	while (varenv)
 	{
@@ -299,9 +319,9 @@ void	revert_pwd(t_varenv *varenv)
 	varenv = start;
 	free(pwd);
 	free(oldpwd);
-}
+}*/
 
-void	new_pwd(char *arg, t_varenv *varenv)
+/*void	new_pwd(char *arg, t_varenv *varenv)
 {
 	t_varenv	*start;
 	char		*buf;
@@ -382,7 +402,7 @@ void	do_cd(char **args, t_varenv *varenv)
 		revert_pwd(varenv);
 	else
 		change_dir(args, varenv);
-}
+}*/
 
 void	do_echo(char **args, t_varenv *varenv)
 {
@@ -435,7 +455,7 @@ void	dobuiltin(char **args, t_varenv **varenv)
 		do_echo(args, *varenv);
 }
 
-char	**unpack_path(t_varenv *varenv)
+/*char	**unpack_path(t_varenv *varenv)
 {
 	char	*unpack;
 	char	**path;
@@ -488,9 +508,9 @@ char	**redo_env(t_varenv *varenv)
 		i++;
 	}
 	return (env);
-}
+}*/
 
-void	exec_process(char *path, char **args, t_varenv *varenv)
+/*void	ex_pro(char *path, char **args, t_varenv *varenv)
 {
 	id_t	pid;
 	int		status;
@@ -505,6 +525,37 @@ void	exec_process(char *path, char **args, t_varenv *varenv)
 		execve(path, args, env);
 		kill(pid, 9);
 	}
+}*/
+
+/*void	slashornot(char **args, t_varenv *varenv)
+{
+	if (args[0][0] == '/')
+	{
+		if (!access(args[0], X_OK))
+			ex_pro(args[0], args, varenv);
+		else
+		{
+			ft_putstr("minishell: command not found: ");
+			ft_putendl(args[0]);
+		}
+	}
+	else
+	{
+		ft_putstr("minishell: command not found: ");
+		ft_putendl(args[0]);
+	}
+}
+
+void	isslash(char *pwd, t_varenv *varenv, char **args)
+{
+	pwd = unpack_pwd(varenv);
+	if (!access(ft_strjoin(ft_strjoin(pwd, "/"), args[0]), X_OK))
+	{
+		ex_pro(ft_strjoin(ft_strjoin(pwd, "/"),
+			args[0]), args, varenv);
+	}
+	else
+		slashornot(args, varenv);
 }
 
 void	process(char **args, t_varenv *varenv)
@@ -531,36 +582,12 @@ void	process(char **args, t_varenv *varenv)
 			i++;
 	}
 	if (exists == 1)
-		exec_process(ft_strjoin(ft_strjoin(path[i], "/"),
-			args[0]), args, varenv);
+		ex_pro(ft_strjoin(ft_strjoin(path[i], "/"), args[0]), args, varenv);
 	else
-	{
-		pwd = unpack_pwd(varenv);
-		if (!access(ft_strjoin(ft_strjoin(pwd, "/"), args[0]), X_OK))
-			exec_process(ft_strjoin(ft_strjoin(pwd, "/"),
-				args[0]), args, varenv);
-		else
-		{
-			if (args[0][0] == '/')
-			{
-				if (!access(args[0], X_OK))
-					exec_process(args[0], args, varenv);
-				else
-				{
-					ft_putstr("minishell: command not found: ");
-					ft_putendl(args[0]);
-				}
-			}
-			else
-			{
-				ft_putstr("minishell: command not found: ");
-				ft_putendl(args[0]);
-			}
-		}
-	}
-}
+		isslash(pwd, varenv, args);
+}*/
 
-char	*notabs(char *line)
+/*char	*notabs(char *line)
 {
 	int		i;
 	char	*str;
@@ -576,6 +603,20 @@ char	*notabs(char *line)
 	}
 	str[i] = '\0';
 	return (str);
+}
+
+void	chooseoptions(char **args, char *line, t_varenv *varenv)
+{
+	if (!ft_strcmp(args[0], "exit"))
+	{
+		free(line);
+		free(args);
+		exit(0);
+	}
+	else if (isbuiltin(args) == 1)
+		dobuiltin(args, &varenv);
+	else if (isbuiltin(args) == 0)
+		process(args, varenv);
 }
 
 int	main(int argc, char **argv, char **env)
@@ -598,18 +639,7 @@ int	main(int argc, char **argv, char **env)
 		ft_memdel((void**)&input);
 		args = ft_strsplit(notabs(line), ' ');
 		if (args[0])
-		{
-			if (!ft_strcmp(args[0], "exit"))
-			{
-				free(line);
-				free(args);
-				return (0);
-			}
-			else if (isbuiltin(args) == 1)
-				dobuiltin(args, &varenv);
-			else if (isbuiltin(args) == 0)
-				process(args, varenv);
-		}
+			chooseoptions(args, line, varenv);
 	}
 	return (0);
-}
+}*/
