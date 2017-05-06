@@ -6,13 +6,19 @@
 #    By: rluder <marvin@42.fr>                      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2016/10/14 16:58:42 by rluder            #+#    #+#              #
-#    Updated: 2017/04/18 16:20:18 by rluder           ###   ########.fr        #
+#    Updated: 2017/05/06 06:07:50 by rluder           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-SRC_NAME = minishell.c \
+SRC_NAME = builtin.c \
+		   cd.c \
+		   cd2.c \
 		   env.c \
 		   get_next_line.c \
+		   main.c \
+		   process.c \
+		   unpack.c \
+		   unset.c \
 
 OBJ_NAME = $(SRC_NAME:.c=.o)
 

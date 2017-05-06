@@ -6,7 +6,7 @@
 /*   By: rluder <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/11/19 16:16:02 by rluder            #+#    #+#             */
-/*   Updated: 2017/05/06 03:27:23 by rluder           ###   ########.fr       */
+/*   Updated: 2017/05/06 06:04:22 by rluder           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,7 @@ t_varenv	*stockenv(char **env)
 	return (varenv[0]);
 }*/
 
-int	isbuiltin(char **args)
+/*int	isbuiltin(char **args)
 {
 	if (ft_strcmp(args[0], "cd") == 0 || ft_strcmp(args[0], "env") == 0 ||
 			ft_strcmp(args[0], "setenv") == 0 ||
@@ -126,9 +126,9 @@ void	do_env(t_varenv *varenv, char **args)
 			i++;
 	}
 	do_env2(varenv, args, i, izi);
-}
+}*/
 
-t_varenv	*remove_start(t_varenv *start)
+/*t_varenv	*remove_start(t_varenv *start)
 {
 	t_varenv	*temp;
 
@@ -199,9 +199,9 @@ t_varenv	*do_unsetenv(char **args, t_varenv *varenv)
 	}
 	varenv = start;
 	return (start);
-}
+}*/
 
-int	change_arg(t_varenv *varenv, char **args, int i)
+/*int	change_arg(t_varenv *varenv, char **args, int i)
 {
 	int j;
 
@@ -245,7 +245,7 @@ t_varenv	*do_setenv(char **args, t_varenv *varenv)
 		i++;
 	}
 	return (start);
-}
+}*/
 
 /*void	go_pwd(t_varenv *varenv)
 {
@@ -404,7 +404,7 @@ void	do_cd(char **args, t_varenv *varenv)
 		change_dir(args, varenv);
 }*/
 
-void	do_echo(char **args, t_varenv *varenv)
+/*void	do_echo(char **args, t_varenv *varenv)
 {
 	int		addc;
 	int		start;
@@ -453,7 +453,7 @@ void	dobuiltin(char **args, t_varenv **varenv)
 		do_cd(args, *varenv);
 	else if (!ft_strcmp(args[0], "echo"))
 		do_echo(args, *varenv);
-}
+}*/
 
 /*char	**unpack_path(t_varenv *varenv)
 {
