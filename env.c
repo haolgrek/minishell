@@ -6,7 +6,7 @@
 /*   By: rluder <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/04/18 15:44:16 by rluder            #+#    #+#             */
-/*   Updated: 2017/05/06 06:01:20 by rluder           ###   ########.fr       */
+/*   Updated: 2017/05/08 21:56:35 by rluder           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,8 @@ void	print_env(t_varenv *varenv, int izi)
 		return ;
 	while (varenv)
 	{
-		if (varenv->var && ft_strcmp(varenv->var, "\0") != 0)
+		if (varenv->var && ft_strcmp(varenv->var, "\0") != 0 &&
+				varenv->var && ft_strcmp(varenv->var, "\r") != 0)
 			ft_putendl(varenv->var);
 		varenv = varenv->next;
 	}

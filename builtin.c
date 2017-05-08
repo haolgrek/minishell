@@ -6,7 +6,7 @@
 /*   By: rluder <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/06 05:47:39 by rluder            #+#    #+#             */
-/*   Updated: 2017/05/08 20:04:52 by rluder           ###   ########.fr       */
+/*   Updated: 2017/05/08 23:06:50 by rluder           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ int				change_arg(t_varenv *varenv, char **args, int i)
 		if (varenv->var)
 		{
 			if (!ft_strcmp(ft_strsplit(args[i], '=')[0],
-				ft_strsplit(varenv->var, '=')[0]))
+				ft_strsplit(varenv->var, '=')[0]) && ft_strchr(args[i], '='))
 			{
 				varenv->var = args[i];
 				j = 1;
@@ -33,29 +33,6 @@ int				change_arg(t_varenv *varenv, char **args, int i)
 	return (j);
 }
 
-char			**new_env(char **args)
-{
-	char	**newenv;
-	int		i;
-	int		j;
-
-	i = 0;
-	j = 0;
-	while (args[i])
-	{
-		if (ft_strchr(args[i], '='))
-		{
-			newenv[j] = malloc(sizeof(char) * (ft_strlen(args[i]) + 1));
-			newenv[j] = ft_strcpy(newenv[j], args[i]);
-			i++;
-			j++;
-		}
-		else
-			i++;
-	}
-	return (newenv);
-}
-
 t_varenv		*do_setenv(char **args, t_varenv *varenv)
 {
 	int			i;
@@ -64,16 +41,6 @@ t_varenv		*do_setenv(char **args, t_varenv *varenv)
 	t_varenv	*start;
 
 	i = 1;
-	if (!varenv)
-	{
-		ft_putendl("no varenv");
-		newenv = new_env(args);
-		ft_putendl("newenv done");
-		varenv = stockenv(newenv);
-		ft_putendl("varenv done");
-		return (varenv);
-//		varenv = create_varenv(NULL);
-	}
 	start = varenv;
 	while (args[i])
 	{
@@ -83,7 +50,7 @@ t_varenv		*do_setenv(char **args, t_varenv *varenv)
 		varenv = start;
 		while (varenv->next)
 			varenv = varenv->next;
-		if (j != 1)
+		if (j != 1 && ft_strchr(args[i], '='))
 			varenv->next = create_varenv(args[i]);
 		i++;
 	}
@@ -118,29 +85,25 @@ void			do_echo(char **args, t_varenv *varenv)
 		ft_putchar('\n');
 }
 
-void			dobuiltin(char **args, t_varenv **varenv)
+void			dobuiltin(char **args, t_varenv *varenv)
 {
 	if (!ft_strcmp(args[0], "unsetenv") && args[1])
 	{
 		if (varenv)
-			*varenv = do_unsetenv(args, *varenv);
+			do_unsetenv(args, varenv);
 		else
 			return ;
 	}
 	else if (!ft_strcmp(args[0], "env"))
-		do_env(*varenv, args);
+		do_env(varenv, args);
 	else if (!ft_strcmp(args[0], "unsetenv") && !args[1])
 		ft_putendl("unsetenv: not enough arguments");
 	else if (!ft_strcmp(args[0], "setenv") && !args[1])
 		ft_putendl("setenv: not enough arguments");
 	else if (!ft_strcmp(args[0], "setenv") && ft_strchr(args[1], '='))
-	{
-		ft_putendl("in");
-		*varenv = do_setenv(args, *varenv);
-		ft_putendl("out");
-	}
+		do_setenv(args, varenv);
 	else if (!ft_strcmp(args[0], "cd"))
-		do_cd(args, *varenv);
+		do_cd(args, varenv);
 	else if (!ft_strcmp(args[0], "echo"))
-		do_echo(args, *varenv);
+		do_echo(args, varenv);
 }

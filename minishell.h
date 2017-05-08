@@ -6,7 +6,7 @@
 /*   By: rluder <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/11/22 02:42:06 by rluder            #+#    #+#             */
-/*   Updated: 2017/05/08 19:47:25 by rluder           ###   ########.fr       */
+/*   Updated: 2017/05/08 21:41:21 by rluder           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ typedef struct	s_varenv
 void		do_new_setenv(char **args, int i);
 t_varenv	*create_varenv(char *env);
 int			isbuiltin(char **args);
-void		dobuiltin(char **args, t_varenv **varenv);
+void		dobuiltin(char **args, t_varenv *varenv);
 int			get_next_line(const int fd, char **line);
 void		process(char **args, t_varenv *varenv);
 char		**unpack_path(t_varenv *varenv);

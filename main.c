@@ -6,7 +6,7 @@
 /*   By: rluder <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/06 02:25:11 by rluder            #+#    #+#             */
-/*   Updated: 2017/05/06 02:50:58 by rluder           ###   ########.fr       */
+/*   Updated: 2017/05/08 21:54:46 by rluder           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,7 +79,7 @@ void	chooseoptions(char **args, char *line, t_varenv *varenv)
 		exit(0);
 	}
 	else if (isbuiltin(args) == 1)
-		dobuiltin(args, &varenv);
+		dobuiltin(args, varenv);
 	else if (isbuiltin(args) == 0)
 		process(args, varenv);
 }
@@ -95,6 +95,8 @@ int	main(int argc, char **argv, char **env)
 	if (argc != 1 && !argv)
 		return (0);
 	varenv = stockenv(env);
+	if (!varenv)
+		varenv = create_varenv("\r");
 	while (1)
 	{
 		ft_putstr("$>");
