@@ -6,7 +6,7 @@
 /*   By: rluder <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/11/22 02:42:06 by rluder            #+#    #+#             */
-/*   Updated: 2017/05/06 05:55:20 by rluder           ###   ########.fr       */
+/*   Updated: 2017/05/08 19:47:25 by rluder           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,3 +39,4 @@ void		go_pwd(t_varenv *varenv);
 t_varenv	*do_unsetenv(char **args, t_varenv *varenv);
 void		do_env(t_varenv *varenv, char **args);
 void		do_cd(char **args, t_varenv *varenv);
+t_varenv	*stockenv(char **env);
