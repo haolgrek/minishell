@@ -6,7 +6,7 @@
 /*   By: rluder <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/06 03:22:19 by rluder            #+#    #+#             */
-/*   Updated: 2017/05/06 03:25:38 by rluder           ###   ########.fr       */
+/*   Updated: 2017/05/09 00:02:08 by rluder           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,7 @@ void			go_pwd(t_varenv *varenv)
 		varenv = varenv->next;
 	}
 	varenv = var1;
+	free (home);
 }
 
 void			revertwhile1(t_varenv *	varenv, char *pwd)

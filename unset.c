@@ -6,7 +6,7 @@
 /*   By: rluder <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/06 05:39:44 by rluder            #+#    #+#             */
-/*   Updated: 2017/05/08 19:13:46 by rluder           ###   ########.fr       */
+/*   Updated: 2017/05/09 00:04:05 by rluder           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,10 +65,7 @@ t_varenv		*do_unsetenv(char **args, t_varenv *varenv)
 
 	i = 1;
 	if (!varenv || (!varenv->var && !varenv->next))
-	{
-		ft_putendl("fuck you");
 		return (varenv);
-	}
 	start = varenv;
 	while (args[i])
 	{
