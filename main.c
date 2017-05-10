@@ -6,13 +6,13 @@
 /*   By: rluder <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/06 02:25:11 by rluder            #+#    #+#             */
-/*   Updated: 2017/05/08 21:54:46 by rluder           ###   ########.fr       */
+/*   Updated: 2017/05/10 18:19:45 by rluder           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-t_varenv	*create_varenv(char *env)
+t_varenv		*create_varenv(char *env)
 {
 	t_varenv	*varenv;
 
@@ -27,7 +27,7 @@ t_varenv	*create_varenv(char *env)
 	return (varenv);
 }
 
-t_varenv	*stockenv(char **env)
+t_varenv		*stockenv(char **env)
 {
 	int			i;
 	t_varenv	*varenv[2];
@@ -52,10 +52,10 @@ t_varenv	*stockenv(char **env)
 	return (varenv[0]);
 }
 
-char	*notabs(char *line)
+char			*notabs(char *line)
 {
-	int		i;
-	char	*str;
+	int			i;
+	char		*str;
 
 	i = 0;
 	str = malloc(sizeof(char) * (ft_strlen(line) + 1));
@@ -70,7 +70,7 @@ char	*notabs(char *line)
 	return (str);
 }
 
-void	chooseoptions(char **args, char *line, t_varenv *varenv)
+void			chooseoptions(char **args, char *line, t_varenv *varenv)
 {
 	if (!ft_strcmp(args[0], "exit"))
 	{
@@ -84,7 +84,7 @@ void	chooseoptions(char **args, char *line, t_varenv *varenv)
 		process(args, varenv);
 }
 
-int	main(int argc, char **argv, char **env)
+int				main(int argc, char **argv, char **env)
 {
 	char		*input;
 	char		*line;

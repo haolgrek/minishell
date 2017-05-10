@@ -6,11 +6,25 @@
 /*   By: rluder <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/06 03:22:19 by rluder            #+#    #+#             */
-/*   Updated: 2017/05/09 00:02:08 by rluder           ###   ########.fr       */
+/*   Updated: 2017/05/10 18:59:22 by rluder           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+void			homeispwd(char *home, t_varenv *varenv)
+{
+	while (varenv)
+	{
+		if (!ft_strcmp("PWD", ft_strsplit(varenv->var, '=')[0]) &&
+				!access(home, F_OK))
+		{
+			varenv->var = ft_strjoin("PWD=", home);
+			chdir(home);
+		}
+		varenv = varenv->next;
+	}
+}
 
 void			go_pwd(t_varenv *varenv)
 {
@@ -31,17 +45,17 @@ void			go_pwd(t_varenv *varenv)
 		varenv = varenv->next;
 	}
 	varenv = var1;
-	while (varenv)
+	homeispwd(home, varenv);
+	if (access(home, F_OK))
 	{
-		if (!ft_strcmp("PWD", ft_strsplit(varenv->var, '=')[0]))
-			varenv->var = ft_strjoin("PWD=", home);
-		varenv = varenv->next;
+		ft_putstr("cd: no such file or directory: ");
+		ft_putendl(home);
 	}
 	varenv = var1;
-	free (home);
+	free(home);
 }
 
-void			revertwhile1(t_varenv *	varenv, char *pwd)
+void			revertwhile1(t_varenv *varenv, char *pwd)
 {
 	while (varenv)
 	{
@@ -76,12 +90,14 @@ void			revert_pwd(t_varenv *varenv)
 	varenv = start;
 	while (varenv)
 	{
-		if (!ft_strcmp("PWD", ft_strsplit(varenv->var, '=')[0]))
+		if (!ft_strcmp("PWD", ft_strsplit(varenv->var, '=')[0])
+				&& !access(oldpwd, F_OK))
 			varenv->var = ft_strcpy(varenv->var, ft_strjoin("PWD=", oldpwd));
 		if (!ft_strcmp("OLDPWD", ft_strsplit(varenv->var, '=')[0]))
 			varenv->var = ft_strcpy(varenv->var, ft_strjoin("OLDPWD=", pwd));
 		varenv = varenv->next;
 	}
+	chdir(oldpwd);
 	varenv = start;
 	free(pwd);
 	free(oldpwd);

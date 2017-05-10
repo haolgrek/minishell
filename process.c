@@ -6,7 +6,7 @@
 /*   By: rluder <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/06 02:51:10 by rluder            #+#    #+#             */
-/*   Updated: 2017/05/06 03:09:51 by rluder           ###   ########.fr       */
+/*   Updated: 2017/05/10 18:19:02 by rluder           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 void	ex_pro(char *path, char **args, t_varenv *varenv)
 {
-	id_t 	pid;
+	id_t	pid;
 	int		status;
 	char	**env;
 
