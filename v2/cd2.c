@@ -6,7 +6,7 @@
 /*   By: rluder <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/06 03:22:19 by rluder            #+#    #+#             */
-/*   Updated: 2017/05/14 20:16:35 by rluder           ###   ########.fr       */
+/*   Updated: 2017/05/14 22:00:27 by rluder           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@ void			go_pwd(t_varenv *varenv)
 		if (!ft_strcmp("HOME", tmp[0]))
 		{
 			if (ft_strlen(tmp[1]) < 256)
-				home = malloc(sizeof(char*) * (ft_strlen(varenv->var) - 5));
+				home = malloc(sizeof(char*) * ft_strlen(tmp[1]));
 				home = ft_strcpy(home, tmp[1]);
 		}
 		if (tmp[0])

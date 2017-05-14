@@ -6,7 +6,7 @@
 /*   By: rluder <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/06 02:59:07 by rluder            #+#    #+#             */
-/*   Updated: 2017/05/14 20:43:13 by rluder           ###   ########.fr       */
+/*   Updated: 2017/05/14 21:48:32 by rluder           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,12 +16,19 @@ char			**unpack_path(t_varenv *varenv)
 {
 	char		*unpack;
 	char		**path;
+	char		**tmp;
 
 	unpack = malloc(sizeof(char) * 255);
 	while (varenv)
 	{
-		if (!ft_strcmp("PATH", ft_strsplit(varenv->var, '=')[0]))
-			unpack = ft_strcpy(unpack, ft_strsplit(varenv->var, '=')[1]);
+		tmp = ft_strsplit(varenv->var, '=');
+		if (!ft_strcmp("PATH", tmp[0]))
+			unpack = ft_strcpy(unpack, tmp[1]);
+		if (tmp[0])
+			free(tmp[0]);
+		if (tmp[1])
+			free(tmp[1]);
+		free(tmp);
 		varenv = varenv->next;
 	}
 	path = ft_strsplit(unpack, ':');
@@ -32,14 +39,21 @@ char			**unpack_path(t_varenv *varenv)
 char			*unpack_pwd(t_varenv *varenv)
 {
 	char		*pwd;
+	char		**tmp;
 
 	while (varenv)
 	{
-		if (!ft_strcmp("PWD", ft_strsplit(varenv->var, '=')[0]))
+		tmp = ft_strsplit(varenv->var, '=');
+		if (!ft_strcmp("PWD", tmp[0]))
 		{
 			pwd = malloc(sizeof(char) * (ft_strlen(varenv->var) - 4));
-			pwd = ft_strcpy(pwd, ft_strsplit(varenv->var, '=')[1]);
+			pwd = ft_strcpy(pwd, tmp[1]);
 		}
+		if (tmp[0])
+			free(tmp[0]);
+		if (tmp[1])
+			free(tmp[1]);
+		free(tmp);
 		varenv = varenv->next;
 	}
 	return (pwd);

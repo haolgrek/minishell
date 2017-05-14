@@ -6,7 +6,7 @@
 /*   By: rluder <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/06 05:39:44 by rluder            #+#    #+#             */
-/*   Updated: 2017/05/09 00:04:05 by rluder           ###   ########.fr       */
+/*   Updated: 2017/05/14 22:11:28 by rluder           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,8 @@ t_varenv		*remove_start(t_varenv *start)
 
 	temp = start;
 	start = start->next;
+	if (temp->var)
+		free(temp->var);
 	free(temp);
 	return (start);
 }
@@ -28,6 +30,8 @@ t_varenv		*remove_current(t_varenv *start, t_varenv *cur, t_varenv *prev)
 
 	temp = cur;
 	prev->next = cur->next;
+	if (temp->var)
+		free(temp->var);
 	free(temp);
 	return (start);
 }
@@ -61,7 +65,7 @@ t_varenv		*do_unsetenv(char **args, t_varenv *varenv)
 {
 	int			i;
 	t_varenv	*start;
-	t_varenv	*temp;
+	char		**tmp;
 
 	i = 1;
 	if (!varenv || (!varenv->var && !varenv->next))
@@ -74,8 +78,14 @@ t_varenv		*do_unsetenv(char **args, t_varenv *varenv)
 		{
 			if (varenv->var)
 			{
-				if (!ft_strcmp(args[i], ft_strsplit(varenv->var, '=')[0]))
+				tmp = ft_strsplit(varenv->var, '=');
+				if (!ft_strcmp(args[i], tmp[0]))
 					start = remove_node(start, varenv);
+				if (tmp[0])
+					free(tmp[0]);
+				if (tmp[1])
+					free(tmp[1]);
+				free(tmp);
 			}
 			varenv = varenv->next;
 		}

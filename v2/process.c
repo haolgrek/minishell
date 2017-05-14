@@ -6,7 +6,7 @@
 /*   By: rluder <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/06 02:51:10 by rluder            #+#    #+#             */
-/*   Updated: 2017/05/14 20:42:38 by rluder           ###   ########.fr       */
+/*   Updated: 2017/05/14 22:38:25 by rluder           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ void			ex_pro(char *path, char **args, t_varenv *varenv)
 	{
 		if (execve(path, args, env) == -1)
 		{
-			ft_putendl("minishell: ");
+			ft_putendl("minishell: not an executable file");
 			exit(EXIT_FAILURE);
 		}
 		kill(pid, 9);
@@ -117,6 +117,16 @@ void			process(char **args, t_varenv *varenv)
 		free(tmp);
 		free(tmp2);
 	}
+	i = 0;
+	if (path)
+	{
+		while(path[i])
+		{
+			free(path[i]);
+			i++;
+		}
+	}
+	free(path);
 	if (exists == 1)
 		ex_pro(tmp2, args, varenv);
 	else
