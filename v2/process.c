@@ -6,7 +6,7 @@
 /*   By: rluder <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/06 02:51:10 by rluder            #+#    #+#             */
-/*   Updated: 2017/05/15 18:51:06 by rluder           ###   ########.fr       */
+/*   Updated: 2017/05/15 21:23:54 by rluder           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@ void			ex_pro(char *path, char **args, t_varenv *varenv)
 	char		**env;
 	struct stat	st;
 
+//	ft_putendl("expro");
 	if (lstat(path, &st) == 0 && st.st_mode & S_IFDIR)
 	{
 		ft_putendl("minishell: command not found");
@@ -39,10 +40,12 @@ void			ex_pro(char *path, char **args, t_varenv *varenv)
 		kill(pid, 9);
 	}
 	letsfree(env);
+//	ft_putendl("outexpro");
 }
 
 void			slashornot(char **args, t_varenv *varenv)
 {
+//	ft_putendl("slashornot");
 	if (args[0][0] == '/')
 	{
 		if (!access(args[0], X_OK))
@@ -58,6 +61,7 @@ void			slashornot(char **args, t_varenv *varenv)
 		ft_putstr("minishell: command not found: ");
 		ft_putendl(args[0]);
 	}
+//	ft_putendl("outslashornot");
 }
 
 void			isslash(char *pwd, t_varenv *varenv, char **args)
@@ -65,6 +69,7 @@ void			isslash(char *pwd, t_varenv *varenv, char **args)
 	char		*tmp;
 	char		*tmp2;
 
+//	ft_putendl("isslash");
 	pwd = unpack_pwd(varenv);
 	tmp = ft_strjoin(pwd, "/");
 	tmp2 = ft_strjoin(tmp, args[0]);
@@ -76,17 +81,20 @@ void			isslash(char *pwd, t_varenv *varenv, char **args)
 		free(tmp2);
 	if (tmp)
 		free(tmp);
+//	ft_putendl("outisslash");
 }
 
 int				isdir(char *args)
 {
 	int			i;
 
+//	ft_putendl("isdir");
 	i = 0;
 	while (args[i])
 		i++;
 	if (args[i - 1] == '/')
 		return (0);
+//	ft_putendl("outisdir");
 	return (1);
 }
 
@@ -99,6 +107,7 @@ void			process(char **args, t_varenv *varenv)
 	char		*tmp;
 	char		*tmp2;
 
+//	ft_putendl("process");
 	i = 0;
 	exists = 0;
 	if (!varenv || !varenv->var || isdir(args[0]) == 0)
@@ -117,7 +126,7 @@ void			process(char **args, t_varenv *varenv)
 		else
 		{
 			if (tmp2)
-				free(tmp2);
+				ft_memdel((void**)&tmp2);
 			i++;
 		}
 		if (tmp)
@@ -125,9 +134,14 @@ void			process(char **args, t_varenv *varenv)
 	}
 	letsfree(path);
 	if (exists == 1)
+	{
+//		ft_putendl("in");
 		ex_pro(tmp2, args, varenv);
+//		ft_putendl("out");
+	}
 	else
 		isslash(pwd, varenv, args);
 	if (tmp2)
-		free(tmp2);
+		ft_memdel((void**)&tmp2);
+//	ft_putendl("outprocess");
 }

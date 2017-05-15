@@ -6,7 +6,7 @@
 /*   By: rluder <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/06 02:25:11 by rluder            #+#    #+#             */
-/*   Updated: 2017/05/15 18:35:38 by rluder           ###   ########.fr       */
+/*   Updated: 2017/05/15 21:36:29 by rluder           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,11 +111,15 @@ int				main(int argc, char **argv, char **env)
 		args = ft_strsplit(tmp, ' ');
 		if (args[0])
 			chooseoptions(args, line, varenv);
+//		ft_putendl("what");
 		if (line)
 			free(line);
+//		ft_putendl("the");
 		if (tmp)
 			ft_memdel((void**)&tmp);
+//		ft_putendl("fuck");
 		letsfree(args);
+//		ft_putendl("wtf");
 	}
 	return (0);
 }

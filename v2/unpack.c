@@ -6,7 +6,7 @@
 /*   By: rluder <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/06 02:59:07 by rluder            #+#    #+#             */
-/*   Updated: 2017/05/15 18:32:20 by rluder           ###   ########.fr       */
+/*   Updated: 2017/05/15 22:08:17 by rluder           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,6 +83,7 @@ char			**redo_env(t_varenv *varenv)
 	{
 		env[i] = malloc(sizeof(char) * ft_strlen(varenv->var));
 		env[i] = ft_strcpy(env[i], varenv->var);
+		varenv = varenv->next;
 		i++;
 	}
 	env[i] = NULL;
