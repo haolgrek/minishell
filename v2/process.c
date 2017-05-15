@@ -6,7 +6,7 @@
 /*   By: rluder <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/06 02:51:10 by rluder            #+#    #+#             */
-/*   Updated: 2017/05/14 22:38:25 by rluder           ###   ########.fr       */
+/*   Updated: 2017/05/15 18:51:06 by rluder           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,8 +72,10 @@ void			isslash(char *pwd, t_varenv *varenv, char **args)
 		ex_pro(tmp2, args, varenv);
 	else
 		slashornot(args, varenv);
-	free(tmp2);
-	free(tmp);
+	if (tmp2)
+		free(tmp2);
+	if (tmp)
+		free(tmp);
 }
 
 int				isdir(char *args)
@@ -113,22 +115,19 @@ void			process(char **args, t_varenv *varenv)
 		if (!access(tmp2, F_OK))
 			exists = 1;
 		else
-			i++;
-		free(tmp);
-		free(tmp2);
-	}
-	i = 0;
-	if (path)
-	{
-		while(path[i])
 		{
-			free(path[i]);
+			if (tmp2)
+				free(tmp2);
 			i++;
 		}
+		if (tmp)
+			free(tmp);
 	}
-	free(path);
+	letsfree(path);
 	if (exists == 1)
 		ex_pro(tmp2, args, varenv);
 	else
 		isslash(pwd, varenv, args);
+	if (tmp2)
+		free(tmp2);
 }

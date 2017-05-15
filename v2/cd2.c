@@ -6,7 +6,7 @@
 /*   By: rluder <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/06 03:22:19 by rluder            #+#    #+#             */
-/*   Updated: 2017/05/14 22:00:27 by rluder           ###   ########.fr       */
+/*   Updated: 2017/05/15 18:22:33 by rluder           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,21 +15,25 @@
 void			homeispwd(char *home, t_varenv *varenv)
 {
 	char		**tmp;
+	char		*temp;
 
 	while (varenv)
 	{
 		tmp = ft_strsplit(varenv->var, '=');
-		if (!ft_strcmp("PWD", tmp[0]) &&
-				!access(home, F_OK))
+		if (!ft_strcmp("PWD", tmp[0]) && !access(home, F_OK))
 		{
-			varenv->var = ft_strjoin("PWD=", home);
+			temp = ft_strjoin("PWD=", home);
+			varenv->var = ft_strcpy(varenv->var, temp);
 			chdir(home);
+			if (tmp)
+				free(temp);
 		}
 		if (tmp[0])
 			free(tmp[0]);
 		if (tmp[1])
 			free(tmp[1]);
-		free(tmp);
+		if (tmp)
+			free(tmp);
 		varenv = varenv->next;
 	}
 }
@@ -47,14 +51,17 @@ void			go_pwd(t_varenv *varenv)
 		if (!ft_strcmp("HOME", tmp[0]))
 		{
 			if (ft_strlen(tmp[1]) < 256)
+			{
 				home = malloc(sizeof(char*) * ft_strlen(tmp[1]));
 				home = ft_strcpy(home, tmp[1]);
+			}
 		}
 		if (tmp[0])
 			free(tmp[0]);
 		if (tmp[1])
 			free(tmp[1]);
-		free(tmp);
+		if (tmp)
+			free(tmp);
 		varenv = varenv->next;
 	}
 	varenv = var1;
@@ -65,7 +72,8 @@ void			go_pwd(t_varenv *varenv)
 		ft_putendl(home);
 	}
 	varenv = var1;
-	free(home);
+	if (home)
+		free(home);
 }
 
 void			revertwhile1(t_varenv *varenv, char *pwd)
@@ -81,7 +89,8 @@ void			revertwhile1(t_varenv *varenv, char *pwd)
 			free(tmp[0]);
 		if (tmp[1])
 			free(tmp[1]);
-		free(tmp);
+		if (tmp)
+			free(tmp);
 		varenv = varenv->next;
 	}
 }
@@ -99,7 +108,8 @@ void			revertwhile2(t_varenv *varenv, char *oldpwd)
 			free(tmp[0]);
 		if (tmp[1])
 			free(tmp[1]);
-		free(tmp);
+		if (tmp)
+			free(tmp);
 		varenv = varenv->next;
 	}
 }
@@ -141,10 +151,13 @@ void			revert_pwd(t_varenv *varenv)
 			free(tmp[0]);
 		if (tmp[1])
 			free(tmp[1]);
-		free(tmp);
+		if (tmp)
+			free(tmp);
 	}
 	chdir(oldpwd);
 	varenv = start;
-	free(pwd);
-	free(oldpwd);
+	if (pwd)
+		free(pwd);
+	if (oldpwd)
+		free(oldpwd);
 }

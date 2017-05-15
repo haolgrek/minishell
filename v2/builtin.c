@@ -6,7 +6,7 @@
 /*   By: rluder <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/06 05:47:39 by rluder            #+#    #+#             */
-/*   Updated: 2017/05/14 20:32:40 by rluder           ###   ########.fr       */
+/*   Updated: 2017/05/15 18:23:25 by rluder           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,12 +35,14 @@ int				change_arg(t_varenv *varenv, char **args, int i)
 			free(tmp[0]);
 		if (tmp[1])
 			free(tmp[1]);
-		free(tmp);
+		if (tmp)
+			free(tmp);
 		if (tmp2[0])
 			free(tmp2[0]);
 		if (tmp2[1])
 			free(tmp2[1]);
-		free(tmp2);
+		if (tmp2)
+			free(tmp2);
 		varenv = varenv->next;
 	}
 	return (j);

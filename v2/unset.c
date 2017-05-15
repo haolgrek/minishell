@@ -6,7 +6,7 @@
 /*   By: rluder <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/06 05:39:44 by rluder            #+#    #+#             */
-/*   Updated: 2017/05/14 22:11:28 by rluder           ###   ########.fr       */
+/*   Updated: 2017/05/15 18:33:39 by rluder           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,8 @@ t_varenv		*remove_start(t_varenv *start)
 	start = start->next;
 	if (temp->var)
 		free(temp->var);
-	free(temp);
+	if (temp)
+		free(temp);
 	return (start);
 }
 
@@ -32,7 +33,8 @@ t_varenv		*remove_current(t_varenv *start, t_varenv *cur, t_varenv *prev)
 	prev->next = cur->next;
 	if (temp->var)
 		free(temp->var);
-	free(temp);
+	if (temp)
+		free(temp);
 	return (start);
 }
 
@@ -85,7 +87,8 @@ t_varenv		*do_unsetenv(char **args, t_varenv *varenv)
 					free(tmp[0]);
 				if (tmp[1])
 					free(tmp[1]);
-				free(tmp);
+				if (tmp)
+					free(tmp);
 			}
 			varenv = varenv->next;
 		}

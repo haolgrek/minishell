@@ -6,7 +6,7 @@
 /*   By: rluder <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/06 02:25:11 by rluder            #+#    #+#             */
-/*   Updated: 2017/05/15 00:09:57 by rluder           ###   ########.fr       */
+/*   Updated: 2017/05/15 18:35:38 by rluder           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,9 +73,10 @@ void			chooseoptions(char **args, char *line, t_varenv *varenv)
 {
 	if (!ft_strcmp(args[0], "exit"))
 	{
-		//redo this
-		free(line);
-		free(args);
+		if (line)
+			free(line);
+		if (args)
+			letsfree(args);
 		exit(0);
 	}
 	else if (isbuiltin(args) == 1)
@@ -104,20 +105,17 @@ int				main(int argc, char **argv, char **env)
 		if (get_next_line(0, &input) < 0)
 			return (0);
 		line = ft_strdup(input);
-		ft_memdel((void**)&input);
+		if (input)
+			ft_memdel((void**)&input);
 		tmp = notabs(line);
 		args = ft_strsplit(tmp, ' ');
 		if (args[0])
 			chooseoptions(args, line, varenv);
-		free(line);
-		ft_memdel((void**)&tmp);
-		int i = 0;
-		while (args[i])
-		{
-			free(args[i]);
-			i++;
-		}
-		free(args);
+		if (line)
+			free(line);
+		if (tmp)
+			ft_memdel((void**)&tmp);
+		letsfree(args);
 	}
 	return (0);
 }
