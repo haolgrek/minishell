@@ -6,7 +6,7 @@
 /*   By: rluder <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/06 03:10:03 by rluder            #+#    #+#             */
-/*   Updated: 2017/05/15 18:25:01 by rluder           ###   ########.fr       */
+/*   Updated: 2017/05/16 15:40:36 by rluder           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,12 +32,7 @@ void			new_pwd(char *arg, t_varenv *varenv)
 			varenv->var = ft_strcpy(varenv->var, tchar);
 			free(tchar);
 		}
-		if (tmp[0])
-			free(tmp[0]);
-		if (tmp[1])
-			free(tmp[1]);
-		if (tmp)
-			free(tmp);
+		letsfree(tmp);
 		varenv = varenv->next;
 	}
 	if (buf)
@@ -110,12 +105,7 @@ void			change_dir(char **args, t_varenv *varenv)
 			pwd = ft_memalloc(ft_strlen(tmp[1]) + 1);
 			pwd = ft_strcpy(pwd, tmp[1]);
 		}
-		if (tmp[0])
-			free(tmp[0]);
-		if (tmp[1])
-			free(tmp[1]);
-		if (tmp)
-			free(tmp);
+		letsfree(tmp);
 		varenv = varenv->next;
 	}
 	if (args[1][0] == '/')

@@ -6,7 +6,7 @@
 /*   By: rluder <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/06 03:22:19 by rluder            #+#    #+#             */
-/*   Updated: 2017/05/15 19:35:24 by rluder           ###   ########.fr       */
+/*   Updated: 2017/05/16 17:48:20 by rluder           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,12 +28,7 @@ void			homeispwd(char *home, t_varenv *varenv)
 			if (tmp)
 				free(temp);
 		}
-		if (tmp[0])
-			free(tmp[0]);
-		if (tmp[1])
-			free(tmp[1]);
-		if (tmp)
-			free(tmp);
+		letsfree(tmp);
 		varenv = varenv->next;
 	}
 }
@@ -52,16 +47,11 @@ void			go_pwd(t_varenv *varenv)
 		{
 			if (ft_strlen(tmp[1]) < 256)
 			{
-				home = malloc(sizeof(char*) * ft_strlen(tmp[1]));
+				home = ft_memalloc(ft_strlen(tmp[1]) + 1);
 				home = ft_strcpy(home, tmp[1]);
 			}
 		}
-		if (tmp[0])
-			free(tmp[0]);
-		if (tmp[1])
-			free(tmp[1]);
-		if (tmp)
-			free(tmp);
+		letsfree(tmp);
 		varenv = varenv->next;
 	}
 	varenv = var1;
@@ -85,12 +75,7 @@ void			revertwhile1(t_varenv *varenv, char *pwd)
 		tmp = ft_strsplit(varenv->var, '=');
 		if (!ft_strcmp("PWD", tmp[0]))
 			pwd = ft_strcpy(pwd, tmp[1]);
-		if (tmp[0])
-			free(tmp[0]);
-		if (tmp[1])
-			free(tmp[1]);
-		if (tmp)
-			free(tmp);
+		letsfree(tmp);
 		varenv = varenv->next;
 	}
 }
@@ -104,12 +89,7 @@ void			revertwhile2(t_varenv *varenv, char *oldpwd)
 		tmp = ft_strsplit(varenv->var, '=');
 		if (!ft_strcmp("OLDPWD", tmp[0]))
 			oldpwd = ft_strcpy(oldpwd, tmp[1]);
-		if (tmp[0])
-			free(tmp[0]);
-		if (tmp[1])
-			free(tmp[1]);
-		if (tmp)
-			free(tmp);
+		letsfree(tmp);
 		varenv = varenv->next;
 	}
 }
@@ -124,8 +104,8 @@ void			revert_pwd(t_varenv *varenv)
 	char		*tchar2;
 
 	start = varenv;
-	pwd = malloc(sizeof(char*) * 256);
-	oldpwd = malloc(sizeof(char*) * 256);
+	pwd = ft_memalloc(256);
+	oldpwd = ft_memalloc(256);
 	revertwhile1(varenv, pwd);
 	varenv = start;
 	revertwhile2(varenv, oldpwd);
@@ -147,12 +127,7 @@ void			revert_pwd(t_varenv *varenv)
 			free(tchar2);
 		}
 		varenv = varenv->next;
-		if (tmp[0])
-			free(tmp[0]);
-		if (tmp[1])
-			free(tmp[1]);
-		if (tmp)
-			free(tmp);
+		letsfree(tmp);
 	}
 	chdir(oldpwd);
 	varenv = start;

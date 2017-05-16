@@ -6,7 +6,7 @@
 /*   By: rluder <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/06 02:25:11 by rluder            #+#    #+#             */
-/*   Updated: 2017/05/15 21:36:29 by rluder           ###   ########.fr       */
+/*   Updated: 2017/05/16 20:24:24 by rluder           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,11 +16,11 @@ t_varenv		*create_varenv(char *env)
 {
 	t_varenv	*varenv;
 
-	varenv = malloc(sizeof(t_varenv*));
-	ft_bzero(varenv, sizeof(t_varenv*));
+	varenv = malloc(sizeof(t_varenv) * 1);
+	ft_bzero(varenv, sizeof(t_varenv) * 1);
 	if (env)
 	{
-		varenv->var = (char*)malloc(sizeof(varenv->var) * (ft_strlen(env) + 1));
+		varenv->var = ft_memalloc(ft_strlen(env) + 1);
 		varenv->var = ft_strcpy(varenv->var, env);
 	}
 	varenv->next = NULL;
@@ -58,7 +58,7 @@ char			*notabs(char *line)
 	char		*str;
 
 	i = 0;
-	str = malloc(sizeof(char*) * ft_strlen(line));
+	str = ft_memalloc(ft_strlen(line) + 1);
 	while (line[i])
 	{
 		str[i] = line[i];
@@ -111,15 +111,11 @@ int				main(int argc, char **argv, char **env)
 		args = ft_strsplit(tmp, ' ');
 		if (args[0])
 			chooseoptions(args, line, varenv);
-//		ft_putendl("what");
 		if (line)
 			free(line);
-//		ft_putendl("the");
 		if (tmp)
 			ft_memdel((void**)&tmp);
-//		ft_putendl("fuck");
 		letsfree(args);
-//		ft_putendl("wtf");
 	}
 	return (0);
 }
