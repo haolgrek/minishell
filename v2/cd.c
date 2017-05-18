@@ -6,7 +6,7 @@
 /*   By: rluder <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/06 03:10:03 by rluder            #+#    #+#             */
-/*   Updated: 2017/05/18 15:08:16 by rluder           ###   ########.fr       */
+/*   Updated: 2017/05/18 17:40:24 by rluder           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ void			new_pwd(char *arg, t_varenv *varenv)
 	char		*tchar;
 
 	buf = malloc(sizeof(char*) * 256);
-	cwd = getcwd(buf, 255);
+	cwd = getcwd(buf, 256);
 	start = varenv;
 	while (varenv)
 	{
@@ -29,6 +29,7 @@ void			new_pwd(char *arg, t_varenv *varenv)
 		if (!ft_strcmp("PWD", tmp[0]))
 		{
 			tchar = ft_strjoin("PWD=", cwd);
+			varenv->var = ft_memalloc(ft_strlen(tchar) + 1);
 			varenv->var = ft_strcpy(varenv->var, tchar);
 			free(tchar);
 		}
@@ -91,11 +92,6 @@ void			change_dir(char **args, t_varenv *varenv)
 	char		**tmp;
 
 	start = varenv;
-	if (args[2])
-	{
-		errorcd(args[2]);
-		return ;
-	}
 	while (varenv)
 	{
 		tmp = ft_strsplit(varenv->var, '=');
@@ -111,8 +107,7 @@ void			change_dir(char **args, t_varenv *varenv)
 		chdir_slash(args, start);
 	else
 		chdir_new(pwd, args, start);
-	if (pwd)
-		free(pwd);
+	freechars(pwd);
 }
 
 void			do_cd(char **args, t_varenv *varenv)
@@ -121,6 +116,8 @@ void			do_cd(char **args, t_varenv *varenv)
 		go_pwd(varenv);
 	else if (!ft_strcmp(args[1], "-"))
 		revert_pwd(varenv);
+	else if (args[2])
+		errorcd(args[2]);
 	else
 		change_dir(args, varenv);
 }

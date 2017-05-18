@@ -6,7 +6,7 @@
 /*   By: rluder <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/06 05:47:39 by rluder            #+#    #+#             */
-/*   Updated: 2017/05/18 14:32:20 by rluder           ###   ########.fr       */
+/*   Updated: 2017/05/18 16:52:40 by rluder           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,8 @@ int				change_arg(t_varenv *varenv, char **args, int i)
 			tmp2 = ft_strsplit(varenv->var, '=');
 			if (!ft_strcmp(tmp[0], tmp2[0]) && ft_strchr(args[i], '='))
 			{
-				varenv->var = args[i];
+				varenv->var = ft_memalloc(ft_strlen(args[i]) + 1);
+				varenv->var = ft_strcpy(varenv->var, args[i]);
 				j = 1;
 			}
 		}

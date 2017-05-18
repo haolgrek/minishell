@@ -6,7 +6,7 @@
 /*   By: rluder <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/06 03:22:19 by rluder            #+#    #+#             */
-/*   Updated: 2017/05/18 15:13:47 by rluder           ###   ########.fr       */
+/*   Updated: 2017/05/18 17:25:25 by rluder           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,8 +59,7 @@ void			go_pwd(t_varenv *varenv)
 	if (access(home, F_OK))
 		errorhome(home);
 	varenv = var1;
-	if (home)
-		free(home);
+	freechars(home);
 }
 
 void			revertwhile1(t_varenv *varenv, char *pwd)
@@ -91,45 +90,48 @@ void			revertwhile2(t_varenv *varenv, char *oldpwd)
 	}
 }
 
+void			copypwd(char *oldpwd, t_varenv *varenv)
+{
+	char		*tchar;
+
+	tchar = ft_strjoin("PWD=", oldpwd);
+	varenv->var = ft_strcpy(varenv->var, tchar);
+	free(tchar);
+}
+
+void			copyoldpwd(char *pwd, t_varenv *varenv)
+{
+	char		*tchar;
+
+	tchar = ft_strjoin("OLDPWD=", pwd);
+	varenv->var = ft_strcpy(varenv->var, tchar);
+	free(tchar);
+}
+
 void			revert_pwd(t_varenv *varenv)
 {
 	char		*pwd;
 	char		*oldpwd;
 	t_varenv	*start;
 	char		**tmp;
-	char		*tchar;
-	char		*tchar2;
 
 	start = varenv;
 	pwd = ft_memalloc(256);
 	oldpwd = ft_memalloc(256);
-	revertwhile1(varenv, pwd);
-	varenv = start;
-	revertwhile2(varenv, oldpwd);
-	varenv = start;
+	revertwhile1(start, pwd);
+	revertwhile2(start, oldpwd);
 	while (varenv)
 	{
 		tmp = ft_strsplit(varenv->var, '=');
-		if (!ft_strcmp("PWD", tmp[0])
-				&& !access(oldpwd, F_OK))
-		{
-			tchar = ft_strjoin("PWD=", oldpwd);
-			varenv->var = ft_strcpy(varenv->var, tchar);
-			free(tchar);
-		}
+		if (!ft_strcmp("PWD", tmp[0]) && !access(oldpwd, F_OK))
+			copypwd(oldpwd, varenv);
 		if (!ft_strcmp("OLDPWD", tmp[0]))
-		{
-			tchar2 = ft_strjoin("OLDPWD=", pwd);
-			varenv->var = ft_strcpy(varenv->var, tchar2);
-			free(tchar2);
-		}
+			copyoldpwd(pwd, varenv);
 		varenv = varenv->next;
 		letsfree(tmp);
 	}
 	chdir(oldpwd);
 	varenv = start;
-	if (pwd)
-		free(pwd);
-	if (oldpwd)
-		free(oldpwd);
+	freechars(pwd);
+	freechars(oldpwd);
 }

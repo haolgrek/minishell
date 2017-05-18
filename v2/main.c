@@ -6,7 +6,7 @@
 /*   By: rluder <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/06 02:25:11 by rluder            #+#    #+#             */
-/*   Updated: 2017/05/18 15:24:39 by rluder           ###   ########.fr       */
+/*   Updated: 2017/05/18 18:03:39 by rluder           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,23 +74,25 @@ void			chooseoptions(char **args, char *line, t_varenv *varenv)
 	else if (isbuiltin(args) == 1)
 		dobuiltin(args, varenv);
 	else if (isbuiltin(args) == 0)
+	{
+		if (!varenv || !varenv->var || isdir(args[0]) == 0)
+		{
+			ft_putstr("minishell: command not found: ");
+			ft_putendl(args[0]);
+			return ;
+		}
 		process(args, varenv);
+	}
 }
 
-void			tandrieu_shot_first(char *input, char **args, t_varenv *varenv)
+void			tandrieu_shot_first(char **args, t_varenv *varenv, char *line)
 {
-	ft_putstr("$>");
-	if (get_next_line(0, &input) < 0)
-		return (0);
-	line = ft_strdup(input);
-	if (input)
-		ft_memdel((void**)&input);
+	char		*tmp;
+
 	tmp = notabs(line);
 	args = ft_strsplit(tmp, ' ');
 	if (args[0])
 		chooseoptions(args, line, varenv);
-	if (line)
-		free(line);
 	if (tmp)
 		ft_memdel((void**)&tmp);
 	letsfree(args);
@@ -101,7 +103,6 @@ int				main(int argc, char **argv, char **env)
 	char		*input;
 	char		*line;
 	char		**args;
-	char		*tmp;
 	t_varenv	*varenv;
 
 	input = NULL;
@@ -118,15 +119,9 @@ int				main(int argc, char **argv, char **env)
 		line = ft_strdup(input);
 		if (input)
 			ft_memdel((void**)&input);
-		tmp = notabs(line);
-		args = ft_strsplit(tmp, ' ');
-		if (args[0])
-			chooseoptions(args, line, varenv);
+		tandrieu_shot_first(args, varenv, line);
 		if (line)
 			free(line);
-		if (tmp)
-			ft_memdel((void**)&tmp);
-		letsfree(args);
 	}
 	return (0);
 }

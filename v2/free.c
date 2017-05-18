@@ -6,11 +6,17 @@
 /*   By: rluder <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/14 15:56:33 by rluder            #+#    #+#             */
-/*   Updated: 2017/05/18 15:13:09 by rluder           ###   ########.fr       */
+/*   Updated: 2017/05/18 17:01:14 by rluder           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+void	freechars(char *str)
+{
+	if (str)
+		free(str);
+}
 
 void	errorhome(char *home)
 {

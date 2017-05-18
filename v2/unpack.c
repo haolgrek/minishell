@@ -6,7 +6,7 @@
 /*   By: rluder <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/06 02:59:07 by rluder            #+#    #+#             */
-/*   Updated: 2017/05/18 15:03:51 by rluder           ###   ########.fr       */
+/*   Updated: 2017/05/18 17:42:03 by rluder           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,8 +44,7 @@ char			**unpack_path(t_varenv *varenv)
 		path = ft_strsplit(unpack, ':');
 	else
 		return (path);
-	if (unpack)
-		free(unpack);
+	freechars(unpack);
 	return (path);
 }
 

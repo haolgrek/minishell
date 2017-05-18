@@ -6,7 +6,7 @@
 /*   By: rluder <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/06 02:51:10 by rluder            #+#    #+#             */
-/*   Updated: 2017/05/18 15:02:29 by rluder           ###   ########.fr       */
+/*   Updated: 2017/05/18 18:10:47 by rluder           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,42 +96,29 @@ int				isdir(char *args)
 void			process(char **args, t_varenv *varenv)
 {
 	char		**path;
-	int			i;
-	int			exists;
+	int			i[2];
 	char		*tmp;
 	char		*tmp2;
 
-	i = 0;
-	exists = 0;
+	i[0] = 0;
+	i[1] = 0;
 	tmp = NULL;
 	tmp2 = NULL;
-	if (!varenv || !varenv->var || isdir(args[0]) == 0)
-	{
-		ft_putstr("minishell: command not found: ");
-		ft_putendl(args[0]);
-		return ;
-	}
 	path = unpack_path(varenv);
-	while (exists != 1 && path && path[i])
+	while (i[1] != 1 && path && path[i[0]])
 	{
-		tmp = ft_strjoin(path[i], "/");
+		tmp = ft_strjoin(path[i[0]], "/");
 		tmp2 = ft_strjoin(tmp, args[0]);
 		if (!access(tmp2, F_OK))
-			exists = 1;
+			i[1] = 1;
 		else
-		{
-			if (tmp2)
-				ft_memdel((void**)&tmp2);
-			i++;
-		}
-		if (tmp)
-			free(tmp);
+			i[0]++;
+		freechars(tmp);
 	}
 	letsfree(path);
-	if (exists == 1)
+	if (i[1] == 1)
 		ex_pro(tmp2, args, varenv);
 	else
 		isslash(varenv, args);
-	if (tmp2)
-		ft_memdel((void**)&tmp2);
+	freechars(tmp2);
 }
