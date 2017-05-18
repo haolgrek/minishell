@@ -6,7 +6,7 @@
 /*   By: rluder <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/06 02:25:11 by rluder            #+#    #+#             */
-/*   Updated: 2017/05/16 20:24:24 by rluder           ###   ########.fr       */
+/*   Updated: 2017/05/18 15:24:11 by rluder           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,21 +33,13 @@ t_varenv		*stockenv(char **env)
 	t_varenv	*varenv[2];
 
 	i = 0;
-	varenv[0] = NULL;
+	varenv[1] = create_varenv("\r");
+	varenv[0] = varenv[1];
 	while (env[i])
 	{
-		if (i == 0)
-		{
-			varenv[1] = create_varenv(env[i]);
-			varenv[0] = varenv[1];
-			i++;
-		}
-		else
-		{
-			varenv[1]->next = create_varenv(env[i]);
-			varenv[1] = varenv[1]->next;
-			i++;
-		}
+		varenv[1]->next = create_varenv(env[i]);
+		varenv[1] = varenv[1]->next;
+		i++;
 	}
 	return (varenv[0]);
 }
@@ -83,6 +75,25 @@ void			chooseoptions(char **args, char *line, t_varenv *varenv)
 		dobuiltin(args, varenv);
 	else if (isbuiltin(args) == 0)
 		process(args, varenv);
+}
+
+void			tandrieu_shot_first(char *input, char **args, t_varenv *varenv)
+{
+	ft_putstr("$>");
+	if (get_next_line(0, &input) < 0)
+		return (0);
+	line = ft_strdup(input);
+	if (input)
+		ft_memdel((void**)&input);
+	tmp = notabs(line);
+	args = ft_strsplit(tmp, ' ');
+	if (args[0])
+		chooseoptions(args, line, varenv);
+	if (line)
+		free(line);
+	if (tmp)
+		ft_memdel((void**)&tmp);
+	letsfree(args);
 }
 
 int				main(int argc, char **argv, char **env)

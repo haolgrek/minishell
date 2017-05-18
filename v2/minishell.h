@@ -6,7 +6,7 @@
 /*   By: rluder <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/11/22 02:42:06 by rluder            #+#    #+#             */
-/*   Updated: 2017/05/15 20:48:30 by rluder           ###   ########.fr       */
+/*   Updated: 2017/05/18 15:13:42 by rluder           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,3 +43,5 @@ void		do_cd(char **args, t_varenv *varenv);
 t_varenv	*stockenv(char **env);
 void		letsfree(char **env);
 void		print_env(t_varenv *varenv, int izi);
+void		errorcd(char *arg);
+void		errorhome(char *home);

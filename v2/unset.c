@@ -6,7 +6,7 @@
 /*   By: rluder <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/06 05:39:44 by rluder            #+#    #+#             */
-/*   Updated: 2017/05/16 19:17:29 by rluder           ###   ########.fr       */
+/*   Updated: 2017/05/18 15:04:18 by rluder           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,6 +84,5 @@ t_varenv		*do_unsetenv(char **args, t_varenv *varenv)
 		}
 		i++;
 	}
-//	varenv = start;
 	return (start);
 }

@@ -6,7 +6,7 @@
 /*   By: rluder <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/06 03:10:03 by rluder            #+#    #+#             */
-/*   Updated: 2017/05/16 15:40:36 by rluder           ###   ########.fr       */
+/*   Updated: 2017/05/18 15:08:16 by rluder           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,8 +93,7 @@ void			change_dir(char **args, t_varenv *varenv)
 	start = varenv;
 	if (args[2])
 	{
-		ft_putstr("cd: string not in pwd: ");
-		ft_putendl(args[2]);
+		errorcd(args[2]);
 		return ;
 	}
 	while (varenv)

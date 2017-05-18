@@ -6,7 +6,7 @@
 /*   By: rluder <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/06 03:22:19 by rluder            #+#    #+#             */
-/*   Updated: 2017/05/16 17:48:20 by rluder           ###   ########.fr       */
+/*   Updated: 2017/05/18 15:13:47 by rluder           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,10 +57,7 @@ void			go_pwd(t_varenv *varenv)
 	varenv = var1;
 	homeispwd(home, varenv);
 	if (access(home, F_OK))
-	{
-		ft_putstr("cd: no such file or directory: ");
-		ft_putendl(home);
-	}
+		errorhome(home);
 	varenv = var1;
 	if (home)
 		free(home);

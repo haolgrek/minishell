@@ -6,7 +6,7 @@
 /*   By: rluder <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/06 02:51:10 by rluder            #+#    #+#             */
-/*   Updated: 2017/05/16 20:08:46 by rluder           ###   ########.fr       */
+/*   Updated: 2017/05/18 15:02:29 by rluder           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,6 @@ void			slashornot(char **args, t_varenv *varenv)
 		ft_putstr("minishell: command not found: ");
 		ft_putendl(args[0]);
 	}
-	ft_putendl("slashdone");
 }
 
 void			isslash(t_varenv *varenv, char **args)
@@ -80,7 +79,6 @@ void			isslash(t_varenv *varenv, char **args)
 		free(tmp);
 	if (pwd)
 		free(pwd);
-	ft_putendl("isslashdone");
 }
 
 int				isdir(char *args)
@@ -113,12 +111,9 @@ void			process(char **args, t_varenv *varenv)
 		ft_putendl(args[0]);
 		return ;
 	}
-	ft_putendl("1");
 	path = unpack_path(varenv);
-	ft_putendl("2");
 	while (exists != 1 && path && path[i])
 	{
-		ft_putendl("3");
 		tmp = ft_strjoin(path[i], "/");
 		tmp2 = ft_strjoin(tmp, args[0]);
 		if (!access(tmp2, F_OK))
@@ -132,14 +127,9 @@ void			process(char **args, t_varenv *varenv)
 		if (tmp)
 			free(tmp);
 	}
-	ft_putendl("4");
 	letsfree(path);
-	ft_putendl("5");
 	if (exists == 1)
-	{
-//		ft_putendl(tmp2);
 		ex_pro(tmp2, args, varenv);
-	}
 	else
 		isslash(varenv, args);
 	if (tmp2)
