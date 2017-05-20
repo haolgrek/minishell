@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   libft.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fpasquer <florianpasquereau37@gmail.com>   +#+  +:+       +#+        */
+/*   By: rluder <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2015/11/02 21:31:48 by fpasquer          #+#    #+#             */
-/*   Updated: 2017/05/14 18:10:24 by rluder           ###   ########.fr       */
+/*   Created: 2017/05/20 19:26:52 by rluder            #+#    #+#             */
+/*   Updated: 2017/05/20 19:28:30 by rluder           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,16 +38,7 @@
 # define CYAN 36
 # define WHITE 37
 # define GET_NEXT_LINE_H
-//# define BUFF_SIZE 5211
 
-/*typedef struct		s_file
-{
-	int				fd;
-	char			*l;
-	unsigned int	nb_file;
-	struct s_file	*next;
-}					t_file;
-*/
 typedef struct		s_list
 {
 	void			*content;

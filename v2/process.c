@@ -6,7 +6,7 @@
 /*   By: rluder <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/06 02:51:10 by rluder            #+#    #+#             */
-/*   Updated: 2017/05/18 18:10:47 by rluder           ###   ########.fr       */
+/*   Updated: 2017/05/20 16:24:16 by rluder           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,8 +100,7 @@ void			process(char **args, t_varenv *varenv)
 	char		*tmp;
 	char		*tmp2;
 
-	i[0] = 0;
-	i[1] = 0;
+	ft_bzero(i, sizeof(i[2]));
 	tmp = NULL;
 	tmp2 = NULL;
 	path = unpack_path(varenv);

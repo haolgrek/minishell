@@ -6,11 +6,25 @@
 /*   By: rluder <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/06 02:59:07 by rluder            #+#    #+#             */
-/*   Updated: 2017/05/18 17:42:03 by rluder           ###   ########.fr       */
+/*   Updated: 2017/05/20 16:37:34 by rluder           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+char			*do_unpack(char *unpack, char *tmp)
+{
+	unpack = ft_memalloc(ft_strlen(tmp) + 1);
+	unpack = ft_strcpy(unpack, tmp);
+	return (unpack);
+}
+
+void			set_null(char **unpack, char ***path, char ***tmp)
+{
+	*unpack = NULL;
+	*path = NULL;
+	*tmp = NULL;
+}
 
 char			**unpack_path(t_varenv *varenv)
 {
@@ -18,9 +32,7 @@ char			**unpack_path(t_varenv *varenv)
 	char		**path;
 	char		**tmp;
 
-	unpack = NULL;
-	path = NULL;
-	tmp = NULL;
+	set_null(&unpack, &path, &tmp);
 	while (varenv)
 	{
 		tmp = ft_strsplit(varenv->var, '=');
@@ -29,10 +41,7 @@ char			**unpack_path(t_varenv *varenv)
 			if (!ft_strcmp("PATH", tmp[0]))
 			{
 				if (tmp[1])
-				{
-					unpack = ft_memalloc(ft_strlen(tmp[1]) + 1);
-					unpack = ft_strcpy(unpack, tmp[1]);
-				}
+					unpack = do_unpack(unpack, tmp[1]);
 				else
 					return (path);
 			}
@@ -42,8 +51,6 @@ char			**unpack_path(t_varenv *varenv)
 	}
 	if (unpack)
 		path = ft_strsplit(unpack, ':');
-	else
-		return (path);
 	freechars(unpack);
 	return (path);
 }

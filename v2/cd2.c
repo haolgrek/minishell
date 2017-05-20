@@ -6,7 +6,7 @@
 /*   By: rluder <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/06 03:22:19 by rluder            #+#    #+#             */
-/*   Updated: 2017/05/18 17:25:25 by rluder           ###   ########.fr       */
+/*   Updated: 2017/05/20 17:41:15 by rluder           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,34 +60,6 @@ void			go_pwd(t_varenv *varenv)
 		errorhome(home);
 	varenv = var1;
 	freechars(home);
-}
-
-void			revertwhile1(t_varenv *varenv, char *pwd)
-{
-	char	**tmp;
-
-	while (varenv)
-	{
-		tmp = ft_strsplit(varenv->var, '=');
-		if (!ft_strcmp("PWD", tmp[0]))
-			pwd = ft_strcpy(pwd, tmp[1]);
-		letsfree(tmp);
-		varenv = varenv->next;
-	}
-}
-
-void			revertwhile2(t_varenv *varenv, char *oldpwd)
-{
-	char	**tmp;
-
-	while (varenv)
-	{
-		tmp = ft_strsplit(varenv->var, '=');
-		if (!ft_strcmp("OLDPWD", tmp[0]))
-			oldpwd = ft_strcpy(oldpwd, tmp[1]);
-		letsfree(tmp);
-		varenv = varenv->next;
-	}
 }
 
 void			copypwd(char *oldpwd, t_varenv *varenv)

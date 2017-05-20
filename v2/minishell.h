@@ -6,7 +6,7 @@
 /*   By: rluder <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/11/22 02:42:06 by rluder            #+#    #+#             */
-/*   Updated: 2017/05/18 18:03:06 by rluder           ###   ########.fr       */
+/*   Updated: 2017/05/20 17:58:00 by rluder           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,3 +47,6 @@ void		errorcd(char *arg);
 void		errorhome(char *home);
 void		freechars(char *str);
 int			isdir(char *args);
+void		revertwhile1(t_varenv *varenv, char *pwd);
+void		revertwhile2(t_varenv *varenv, char *oldpwd);
+char		*notabs(char *line);

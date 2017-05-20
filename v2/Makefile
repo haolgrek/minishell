@@ -6,7 +6,7 @@
 #    By: rluder <marvin@42.fr>                      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2016/10/14 16:58:42 by rluder            #+#    #+#              #
-#    Updated: 2017/05/14 18:55:08 by rluder           ###   ########.fr        #
+#    Updated: 2017/05/20 19:38:36 by rluder           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -20,6 +20,7 @@ SRC_NAME = builtin.c \
 		   unpack.c \
 		   unset.c \
 		   free.c \
+		   revert.c \
 
 OBJ_NAME = $(SRC_NAME:.c=.o)
 
@@ -35,7 +36,7 @@ CLEANLIB = make clean -C ./libft
 
 FCLEANLIB = make fclean -C ./libft
 
-CFLAGS = -Wall -Wextra -Werror -lmlx -framework OpenGL -framework Appkit
+CFLAGS = -Wall -Wextra -Werror
 
 all : $(EXE)
 

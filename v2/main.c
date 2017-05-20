@@ -6,7 +6,7 @@
 /*   By: rluder <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/06 02:25:11 by rluder            #+#    #+#             */
-/*   Updated: 2017/05/18 18:03:39 by rluder           ###   ########.fr       */
+/*   Updated: 2017/05/20 18:00:08 by rluder           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,23 +42,6 @@ t_varenv		*stockenv(char **env)
 		i++;
 	}
 	return (varenv[0]);
-}
-
-char			*notabs(char *line)
-{
-	int			i;
-	char		*str;
-
-	i = 0;
-	str = ft_memalloc(ft_strlen(line) + 1);
-	while (line[i])
-	{
-		str[i] = line[i];
-		if (line[i] == '\t')
-			str[i] = ' ';
-		i++;
-	}
-	return (str);
 }
 
 void			chooseoptions(char **args, char *line, t_varenv *varenv)
