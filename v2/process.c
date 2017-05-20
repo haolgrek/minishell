@@ -6,7 +6,7 @@
 /*   By: rluder <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/06 02:51:10 by rluder            #+#    #+#             */
-/*   Updated: 2017/05/20 16:24:16 by rluder           ###   ########.fr       */
+/*   Updated: 2017/05/21 00:01:42 by rluder           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,8 @@ void			ex_pro(char *path, char **args, t_varenv *varenv)
 	int			status;
 	char		**env;
 	struct stat	st;
-
+	
+	env = NULL;
 	if (lstat(path, &st) == 0 && st.st_mode & S_IFDIR)
 	{
 		ft_putendl("minishell: command not found");
@@ -66,6 +67,9 @@ void			isslash(t_varenv *varenv, char **args)
 	char		*tmp;
 	char		*tmp2;
 
+	tmp = NULL;
+	tmp2 = NULL;
+	pwd = NULL;
 	pwd = unpack_pwd(varenv);
 	tmp = ft_strjoin(pwd, "/");
 	tmp2 = ft_strjoin(tmp, args[0]);
@@ -93,16 +97,14 @@ int				isdir(char *args)
 	return (1);
 }
 
-void			process(char **args, t_varenv *varenv)
+void			process(char **args, t_varenv *varenv, char *tmp, char *tmp2)
 {
 	char		**path;
 	int			i[2];
-	char		*tmp;
-	char		*tmp2;
 
-	ft_bzero(i, sizeof(i[2]));
-	tmp = NULL;
-	tmp2 = NULL;
+	i[0] = 0;
+	i[1] = 0;
+	path = NULL;
 	path = unpack_path(varenv);
 	while (i[1] != 1 && path && path[i[0]])
 	{
@@ -115,6 +117,14 @@ void			process(char **args, t_varenv *varenv)
 		freechars(tmp);
 	}
 	letsfree(path);
+//	ft_putendl(path[0]);
+//	ft_putendl(path[1]);
+//	ft_putendl(path[2]);
+//	ft_putendl(path[3]);
+//	ft_putendl(path[4]);
+//	ft_putendl(path[5]);
+//	ft_putendl(path[6]);
+//	ft_putendl(path[7]);
 	if (i[1] == 1)
 		ex_pro(tmp2, args, varenv);
 	else

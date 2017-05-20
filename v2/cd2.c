@@ -6,7 +6,7 @@
 /*   By: rluder <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/06 03:22:19 by rluder            #+#    #+#             */
-/*   Updated: 2017/05/20 17:41:15 by rluder           ###   ########.fr       */
+/*   Updated: 2017/05/20 23:58:52 by rluder           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,8 @@ void			homeispwd(char *home, t_varenv *varenv)
 	char		**tmp;
 	char		*temp;
 
+	tmp = NULL;
+	temp = NULL;
 	while (varenv)
 	{
 		tmp = ft_strsplit(varenv->var, '=');
@@ -40,6 +42,8 @@ void			go_pwd(t_varenv *varenv)
 	char		**tmp;
 
 	var1 = varenv;
+	home = NULL;
+	tmp = NULL;
 	while (varenv)
 	{
 		tmp = ft_strsplit(varenv->var, '=');
@@ -90,6 +94,7 @@ void			revert_pwd(t_varenv *varenv)
 	start = varenv;
 	pwd = ft_memalloc(256);
 	oldpwd = ft_memalloc(256);
+	tmp = NULL;
 	revertwhile1(start, pwd);
 	revertwhile2(start, oldpwd);
 	while (varenv)

@@ -6,7 +6,7 @@
 /*   By: rluder <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/06 05:47:39 by rluder            #+#    #+#             */
-/*   Updated: 2017/05/18 16:52:40 by rluder           ###   ########.fr       */
+/*   Updated: 2017/05/21 00:03:50 by rluder           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,8 @@ int				change_arg(t_varenv *varenv, char **args, int i)
 	char		**tmp2;
 
 	j = 0;
+	tmp = NULL;
+	tmp2 = NULL;
 	while (varenv && varenv->var && args[i])
 	{
 		if (varenv->var)
@@ -47,6 +49,7 @@ t_varenv		*do_setenv(char **args, t_varenv *varenv)
 	t_varenv	*start;
 
 	i = 1;
+	newenv = NULL;
 	start = varenv;
 	while (args[i])
 	{

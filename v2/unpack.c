@@ -6,7 +6,7 @@
 /*   By: rluder <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/06 02:59:07 by rluder            #+#    #+#             */
-/*   Updated: 2017/05/20 16:37:34 by rluder           ###   ########.fr       */
+/*   Updated: 2017/05/21 00:03:07 by rluder           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,6 +92,7 @@ char			**redo_env(t_varenv *varenv)
 	char		**env;
 
 	j = 0;
+	env = NULL;
 	start = varenv;
 	while (varenv)
 	{

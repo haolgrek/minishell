@@ -6,7 +6,7 @@
 /*   By: rluder <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/11/22 02:42:06 by rluder            #+#    #+#             */
-/*   Updated: 2017/05/20 17:58:00 by rluder           ###   ########.fr       */
+/*   Updated: 2017/05/20 23:36:47 by rluder           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ t_varenv	*create_varenv(char *env);
 int			isbuiltin(char **args);
 void		dobuiltin(char **args, t_varenv *varenv);
 int			get_next_line(const int fd, char **line);
-void		process(char **args, t_varenv *varenv);
+void		process(char **args, t_varenv *varenv, char *tmp, char *tmp2);
 char		**unpack_path(t_varenv *varenv);
 char		*unpack_pwd(t_varenv *varenv);
 char		**redo_env(t_varenv *varenv);

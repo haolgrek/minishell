@@ -6,7 +6,7 @@
 /*   By: rluder <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/20 17:32:43 by rluder            #+#    #+#             */
-/*   Updated: 2017/05/20 17:58:28 by rluder           ###   ########.fr       */
+/*   Updated: 2017/05/21 00:02:29 by rluder           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@ void			revertwhile1(t_varenv *varenv, char *pwd)
 {
 	char	**tmp;
 
+	tmp = NULL;
 	while (varenv)
 	{
 		tmp = ft_strsplit(varenv->var, '=');
@@ -30,6 +31,7 @@ void			revertwhile2(t_varenv *varenv, char *oldpwd)
 {
 	char	**tmp;
 
+	tmp = NULL;
 	while (varenv)
 	{
 		tmp = ft_strsplit(varenv->var, '=');
@@ -45,6 +47,7 @@ char			*notabs(char *line)
 	int			i;
 	char		*str;
 
+	str = NULL;
 	i = 0;
 	str = ft_memalloc(ft_strlen(line) + 1);
 	while (line[i])

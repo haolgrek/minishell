@@ -6,7 +6,7 @@
 /*   By: rluder <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/06 02:25:11 by rluder            #+#    #+#             */
-/*   Updated: 2017/05/20 18:00:08 by rluder           ###   ########.fr       */
+/*   Updated: 2017/05/21 00:03:45 by rluder           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,7 +64,7 @@ void			chooseoptions(char **args, char *line, t_varenv *varenv)
 			ft_putendl(args[0]);
 			return ;
 		}
-		process(args, varenv);
+		process(args, varenv, NULL, NULL);
 	}
 }
 

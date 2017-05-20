@@ -6,7 +6,7 @@
 /*   By: rluder <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/06 03:10:03 by rluder            #+#    #+#             */
-/*   Updated: 2017/05/18 17:40:24 by rluder           ###   ########.fr       */
+/*   Updated: 2017/05/20 23:57:57 by rluder           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@ void			new_pwd(char *arg, t_varenv *varenv)
 	buf = malloc(sizeof(char*) * 256);
 	cwd = getcwd(buf, 256);
 	start = varenv;
+	tmp = NULL;
 	while (varenv)
 	{
 		tmp = ft_strsplit(varenv->var, '=');
@@ -92,6 +93,8 @@ void			change_dir(char **args, t_varenv *varenv)
 	char		**tmp;
 
 	start = varenv;
+	tmp = NULL;
+	pwd = NULL;
 	while (varenv)
 	{
 		tmp = ft_strsplit(varenv->var, '=');
