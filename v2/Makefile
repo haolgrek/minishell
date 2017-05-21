@@ -6,7 +6,7 @@
 #    By: rluder <marvin@42.fr>                      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2016/10/14 16:58:42 by rluder            #+#    #+#              #
-#    Updated: 2017/05/20 19:38:36 by rluder           ###   ########.fr        #
+#    Updated: 2017/05/21 18:25:15 by rluder           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -14,7 +14,6 @@ SRC_NAME = builtin.c \
 		   cd.c \
 		   cd2.c \
 		   env.c \
-		   get_next_line.c \
 		   main.c \
 		   process.c \
 		   unpack.c \

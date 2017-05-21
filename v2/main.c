@@ -6,7 +6,7 @@
 /*   By: rluder <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/06 02:25:11 by rluder            #+#    #+#             */
-/*   Updated: 2017/05/21 17:34:44 by rluder           ###   ########.fr       */
+/*   Updated: 2017/05/21 18:35:45 by rluder           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,8 +16,7 @@ t_varenv		*create_varenv(char *env)
 {
 	t_varenv	*varenv;
 
-	varenv = malloc(sizeof(t_varenv) * 1);
-	ft_bzero(varenv, sizeof(t_varenv) * 1);
+	varenv = ft_memalloc(sizeof(t_varenv));
 	if (env)
 	{
 		varenv->var = ft_memalloc(ft_strlen(env) + 1);
