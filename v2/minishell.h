@@ -6,7 +6,7 @@
 /*   By: rluder <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/11/22 02:42:06 by rluder            #+#    #+#             */
-/*   Updated: 2017/05/20 23:36:47 by rluder           ###   ########.fr       */
+/*   Updated: 2017/05/21 18:37:39 by rluder           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,6 @@
 #include <signal.h>
 #include <dirent.h>
 #include "libft/libft.h"
-#include "get_next_line.h"
 
 typedef struct	s_varenv
 {

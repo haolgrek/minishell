@@ -6,7 +6,7 @@
 /*   By: rluder <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/06 03:22:19 by rluder            #+#    #+#             */
-/*   Updated: 2017/05/20 23:58:52 by rluder           ###   ########.fr       */
+/*   Updated: 2017/05/21 18:47:18 by rluder           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,9 +59,12 @@ void			go_pwd(t_varenv *varenv)
 		varenv = varenv->next;
 	}
 	varenv = var1;
-	homeispwd(home, varenv);
-	if (access(home, F_OK))
-		errorhome(home);
+	if (home)
+	{
+		homeispwd(home, varenv);
+		if (access(home, F_OK))
+			errorhome(home);
+	}
 	varenv = var1;
 	freechars(home);
 }
