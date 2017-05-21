@@ -6,7 +6,7 @@
 /*   By: rluder <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/06 02:51:10 by rluder            #+#    #+#             */
-/*   Updated: 2017/05/21 18:11:47 by rluder           ###   ########.fr       */
+/*   Updated: 2017/05/21 19:29:27 by rluder           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ void			ex_pro(char *path, char **args, t_varenv *varenv)
 	int			status;
 	char		**env;
 	struct stat	st;
-	
+
 	env = NULL;
 	if (lstat(path, &st) == 0 && st.st_mode & S_IFDIR)
 	{
@@ -97,6 +97,17 @@ int				isdir(char *args)
 	return (1);
 }
 
+void			endprocess(int i, char *tmp2, char **args, t_varenv *varenv)
+{
+	if (i == 1)
+	{
+		ex_pro(tmp2, args, varenv);
+		freechars(tmp2);
+	}
+	else
+		isslash(varenv, args);
+}
+
 void			process(char **args, t_varenv *varenv, char *tmp, char *tmp2)
 {
 	char		**path;
@@ -121,11 +132,5 @@ void			process(char **args, t_varenv *varenv, char *tmp, char *tmp2)
 	}
 	if (path)
 		ft_free_strsplit(path);
-	if (i[1] == 1)
-	{
-		ex_pro(tmp2, args, varenv);
-		freechars(tmp2);
-	}
-	else
-		isslash(varenv, args);
+	endprocess(i[1], tmp2, args, varenv);
 }

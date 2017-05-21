@@ -6,7 +6,7 @@
 /*   By: rluder <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/06 02:59:07 by rluder            #+#    #+#             */
-/*   Updated: 2017/05/21 18:15:52 by rluder           ###   ########.fr       */
+/*   Updated: 2017/05/21 18:58:38 by rluder           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,6 @@ char			**unpack_path(t_varenv *varenv)
 
 	set_null(&path, &tmp);
 	unpack = NULL;
-//	unpack = ft_memalloc(sizeof(char) * 256);
 	while (varenv)
 	{
 		tmp = ft_strsplit(varenv->var, '=');
@@ -98,8 +97,7 @@ char			**redo_env(t_varenv *varenv)
 		varenv = varenv->next;
 	}
 	varenv = start;
-	env = malloc(sizeof(char*) * (j + 1));
-	ft_bzero(env, sizeof(char*) * (j + 1));
+	env = ft_memalloc(sizeof(char*) * (j + 1));
 	i = 0;
 	while (i < j)
 	{

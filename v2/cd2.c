@@ -6,7 +6,7 @@
 /*   By: rluder <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/06 03:22:19 by rluder            #+#    #+#             */
-/*   Updated: 2017/05/21 18:47:18 by rluder           ###   ########.fr       */
+/*   Updated: 2017/05/21 19:25:35 by rluder           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,16 @@ void			homeispwd(char *home, t_varenv *varenv)
 	}
 }
 
+void			do_home(char *home, t_varenv *varenv)
+{
+	if (home)
+	{
+		homeispwd(home, varenv);
+		if (access(home, F_OK))
+			errorhome(home);
+	}
+}
+
 void			go_pwd(t_varenv *varenv)
 {
 	t_varenv	*var1;
@@ -59,12 +69,7 @@ void			go_pwd(t_varenv *varenv)
 		varenv = varenv->next;
 	}
 	varenv = var1;
-	if (home)
-	{
-		homeispwd(home, varenv);
-		if (access(home, F_OK))
-			errorhome(home);
-	}
+	do_home(home, varenv);
 	varenv = var1;
 	freechars(home);
 }
