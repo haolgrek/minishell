@@ -6,7 +6,7 @@
 /*   By: rluder <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/06 02:51:10 by rluder            #+#    #+#             */
-/*   Updated: 2017/05/21 00:01:42 by rluder           ###   ########.fr       */
+/*   Updated: 2017/05/21 18:11:47 by rluder           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,24 +110,22 @@ void			process(char **args, t_varenv *varenv, char *tmp, char *tmp2)
 	{
 		tmp = ft_strjoin(path[i[0]], "/");
 		tmp2 = ft_strjoin(tmp, args[0]);
+		freechars(tmp);
 		if (!access(tmp2, F_OK))
 			i[1] = 1;
 		else
+		{
+			free(tmp2);
 			i[0]++;
-		freechars(tmp);
+		}
 	}
-	letsfree(path);
-//	ft_putendl(path[0]);
-//	ft_putendl(path[1]);
-//	ft_putendl(path[2]);
-//	ft_putendl(path[3]);
-//	ft_putendl(path[4]);
-//	ft_putendl(path[5]);
-//	ft_putendl(path[6]);
-//	ft_putendl(path[7]);
+	if (path)
+		ft_free_strsplit(path);
 	if (i[1] == 1)
+	{
 		ex_pro(tmp2, args, varenv);
+		freechars(tmp2);
+	}
 	else
 		isslash(varenv, args);
-	freechars(tmp2);
 }

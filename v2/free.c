@@ -6,7 +6,7 @@
 /*   By: rluder <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/14 15:56:33 by rluder            #+#    #+#             */
-/*   Updated: 2017/05/21 00:06:52 by rluder           ###   ########.fr       */
+/*   Updated: 2017/05/21 16:53:19 by rluder           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,6 @@ void	letsfree(char **env)
 		while (env[i])
 		{
 			free(env[i]);
-//			ft_memdel((void**)env[i]);
 			i++;
 		}
 		free(env);

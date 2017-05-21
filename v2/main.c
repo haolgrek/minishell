@@ -6,7 +6,7 @@
 /*   By: rluder <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/06 02:25:11 by rluder            #+#    #+#             */
-/*   Updated: 2017/05/21 00:03:45 by rluder           ###   ########.fr       */
+/*   Updated: 2017/05/21 17:34:44 by rluder           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,9 @@ t_varenv		*stockenv(char **env)
 
 void			chooseoptions(char **args, char *line, t_varenv *varenv)
 {
+	char		*tmp;
+	char		*tmp2;
+
 	if (!ft_strcmp(args[0], "exit"))
 	{
 		if (line)
@@ -64,7 +67,7 @@ void			chooseoptions(char **args, char *line, t_varenv *varenv)
 			ft_putendl(args[0]);
 			return ;
 		}
-		process(args, varenv, NULL, NULL);
+		process(args, varenv, tmp, tmp2);
 	}
 }
 

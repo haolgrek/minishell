@@ -6,7 +6,7 @@
 /*   By: rluder <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/06 02:59:07 by rluder            #+#    #+#             */
-/*   Updated: 2017/05/21 00:03:07 by rluder           ###   ########.fr       */
+/*   Updated: 2017/05/21 18:11:44 by rluder           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,14 +14,12 @@
 
 char			*do_unpack(char *unpack, char *tmp)
 {
-	unpack = ft_memalloc(ft_strlen(tmp) + 1);
 	unpack = ft_strcpy(unpack, tmp);
 	return (unpack);
 }
 
-void			set_null(char **unpack, char ***path, char ***tmp)
+void			set_null(char ***path, char ***tmp)
 {
-	*unpack = NULL;
 	*path = NULL;
 	*tmp = NULL;
 }
@@ -32,7 +30,9 @@ char			**unpack_path(t_varenv *varenv)
 	char		**path;
 	char		**tmp;
 
-	set_null(&unpack, &path, &tmp);
+	set_null(&path, &tmp);
+	unpack = NULL;
+//	unpack = ft_memalloc(sizeof(char) * 256);
 	while (varenv)
 	{
 		tmp = ft_strsplit(varenv->var, '=');
@@ -40,13 +40,11 @@ char			**unpack_path(t_varenv *varenv)
 		{
 			if (!ft_strcmp("PATH", tmp[0]))
 			{
-				if (tmp[1])
-					unpack = do_unpack(unpack, tmp[1]);
-				else
-					return (path);
+				unpack = ft_memalloc(sizeof(char) * (ft_strlen(tmp[1]) + 1));
+				unpack = do_unpack(unpack, tmp[1]);
 			}
-			letsfree(tmp);
 		}
+		ft_free_strsplit(tmp);
 		varenv = varenv->next;
 	}
 	if (unpack)
@@ -77,7 +75,7 @@ char			*unpack_pwd(t_varenv *varenv)
 				else
 					return (NULL);
 			}
-			letsfree(tmp);
+			ft_free_strsplit(tmp);
 		}
 		varenv = varenv->next;
 	}
