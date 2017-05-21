@@ -6,7 +6,7 @@
 /*   By: rluder <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/14 15:56:33 by rluder            #+#    #+#             */
-/*   Updated: 2017/05/21 16:53:19 by rluder           ###   ########.fr       */
+/*   Updated: 2017/05/21 21:08:10 by rluder           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,4 +44,16 @@ void	letsfree(char **env)
 		}
 		free(env);
 	}
+}
+
+int		isdir(char *args)
+{
+	int	i;
+
+	i = 0;
+	while (args[i])
+		i++;
+	if (args[i - 1] == '/')
+		return (0);
+	return (1);
 }

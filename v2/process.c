@@ -6,7 +6,7 @@
 /*   By: rluder <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/06 02:51:10 by rluder            #+#    #+#             */
-/*   Updated: 2017/05/21 19:29:27 by rluder           ###   ########.fr       */
+/*   Updated: 2017/05/21 21:07:33 by rluder           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,18 +83,6 @@ void			isslash(t_varenv *varenv, char **args)
 		free(tmp);
 	if (pwd)
 		free(pwd);
-}
-
-int				isdir(char *args)
-{
-	int			i;
-
-	i = 0;
-	while (args[i])
-		i++;
-	if (args[i - 1] == '/')
-		return (0);
-	return (1);
 }
 
 void			endprocess(int i, char *tmp2, char **args, t_varenv *varenv)

@@ -6,11 +6,40 @@
 /*   By: rluder <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/06 05:47:39 by rluder            #+#    #+#             */
-/*   Updated: 2017/05/21 00:03:50 by rluder           ###   ########.fr       */
+/*   Updated: 2017/05/21 20:59:34 by rluder           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+void			go_pwd(t_varenv *varenv)
+{
+	t_varenv	*var1;
+	char		*home;
+	char		**tmp;
+
+	var1 = varenv;
+	home = NULL;
+	tmp = NULL;
+	while (varenv)
+	{
+		tmp = ft_strsplit(varenv->var, '=');
+		if (!ft_strcmp("HOME", tmp[0]))
+		{
+			if (ft_strlen(tmp[1]) < 256)
+			{
+				home = ft_memalloc(ft_strlen(tmp[1]) + 1);
+				home = ft_strcpy(home, tmp[1]);
+			}
+		}
+		letsfree(tmp);
+		varenv = varenv->next;
+	}
+	varenv = var1;
+	do_home(home, varenv);
+	varenv = var1;
+	freechars(home);
+}
 
 int				change_arg(t_varenv *varenv, char **args, int i)
 {
